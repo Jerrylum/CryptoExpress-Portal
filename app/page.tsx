@@ -6,10 +6,12 @@ export default function Home() {
   InternalGoodCollection.init();
 
   return (
-    <div>
-      <h2 className="mb-3 text-3xl font-semibold">Good Library</h2>
+    <div className="w-full">
+      <h2 className="mb-12 text-3xl font-semibold">Good Library</h2>
 
-      <Button color="gray">Insert</Button>
+      <div className="mb-4">
+        <Button color="gray">Insert</Button>
+      </div>
 
       <GoodDataGrid />
     </div>

@@ -35,10 +35,7 @@ export async function init() {
 
   console.log("Initializing InternalGoodCollection database");
   
-
   const records = await readCSV<Good>("db/goods.csv");
-  console.log(records);
-  
   for (const record of records) {
     await set(record);
   }
