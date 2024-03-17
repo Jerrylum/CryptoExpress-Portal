@@ -1,6 +1,8 @@
 import React from "react";
 
-export function useSemaphore(): [number, () => void] {
+export type Semaphore = [number, () => void];
+
+export function useSemaphore(): Semaphore {
   const [value, setValue] = React.useState(0);
 
   return [

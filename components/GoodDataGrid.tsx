@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 
 import {
@@ -14,44 +15,50 @@ import {
 import { Good } from "@/chaincode/Models";
 import * as InternalGoodCollection from "@/internal/InternalGoodCollection";
 import { TableEditableCell } from "./TableEditableCell";
-import { useSemaphore } from "./SemaphoreHook";
+import { Semaphore } from "./SemaphoreHook";
 
 class GoodNode implements TableNode {
-  constructor(private good: Good) {}
+  constructor(public _obj: Good) {}
 
   get id() {
-    return this.good.uuid;
+    return this._obj.uuid;
   }
 
   get uuid() {
-    return this.good.uuid;
+    return this._obj.uuid;
   }
 
   get name() {
-    return this.good.name;
+    return this._obj.name;
   }
 
   get barcode() {
-    return this.good.barcode;
+    return this._obj.barcode;
   }
 }
 
-export function GoodDataGrid() {
+export function GoodDataGrid(props: { search: string, semaphore: Semaphore }) {
   const [rawData, setRawData] = React.useState<GoodNode[]>([]);
-  const [dataSemaphore, dataUpdate] = useSemaphore();
+
+  const [isPending, startTransition] = React.useTransition();
 
   React.useEffect(() => {
-    (async () => {
-      const list = await InternalGoodCollection.list();
-      setRawData(list.map((good) => new GoodNode(good)));
-    })();
-  }, [dataSemaphore]);
+    startTransition(() => {
+      InternalGoodCollection.search(props.search).then((list) => {
+        setRawData(list.map((good) => new GoodNode(good)));
+      });
+    });
+  }, [props.semaphore[0], props.search]);
+
+  if (isPending && rawData.length === 0) { // reduce the chance of flickering
+    return <div>Loading...</div>;
+  }
 
   const columns = [
     {
       label: "UUID",
       resize: true,
-      renderCell: (item) => <span title={item.id}>{item.id.slice(8)}</span>,
+      renderCell: (item) => <span title={item.id}>{item.id}</span>,
     },
     {
       label: "Name",
@@ -69,7 +76,21 @@ export function GoodDataGrid() {
         />
       ),
     },
-    { label: "Barcode", renderCell: (item) => item.barcode },
+    {
+      label: "Barcode",
+      renderCell: (item) => (
+        <TableEditableCell
+          getter={() => item.barcode}
+          setter={(value) => {
+            InternalGoodCollection.set({
+              uuid: item.uuid,
+              name: item.name,
+              barcode: value,
+            });
+          }}
+        />
+      ),
+    },
     {
       label: "",
       renderCell: (item) => (
@@ -77,7 +98,7 @@ export function GoodDataGrid() {
           className="fill-gray-200 hover:fill-red-600"
           onClick={async () => {
             await InternalGoodCollection.remove(item.uuid);
-            dataUpdate();
+            props.semaphore[1]();
           }}
         >
           <svg

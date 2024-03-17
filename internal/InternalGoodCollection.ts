@@ -17,6 +17,19 @@ export async function list() {
   return [..._data.values()];
 }
 
+export async function search(search: string) {
+  if (search === "") {
+    return list();
+  } else {
+    return (await list()).filter(
+      (good) =>
+        good.uuid.includes(search) ||
+        good.name.includes(search) ||
+        good.barcode.includes(search)
+    );
+  }
+}
+
 export async function has(uuid: string) {
   return _data.has(uuid);
 }
@@ -34,7 +47,7 @@ export async function init() {
   initial = true;
 
   console.log("Initializing InternalGoodCollection database");
-  
+
   const records = await readCSV<Good>("db/goods.csv");
   for (const record of records) {
     await set(record);

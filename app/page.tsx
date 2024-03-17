@@ -1,20 +1,8 @@
-import { GoodDataGrid } from "@/components/GoodDataGrid";
-import { Button } from "flowbite-react";
-import * as InternalGoodCollection from "@/internal/InternalGoodCollection";
 
 export default function Home() {
-  InternalGoodCollection.init();
 
   return (
-    <div className="w-full">
-      <h2 className="mb-12 text-3xl font-semibold">Good Library</h2>
-
-      <div className="mb-4">
-        <Button color="gray">Insert</Button>
-      </div>
-
-      <GoodDataGrid />
-    </div>
+    "Home Page"
     // <main className="flex min-h-screen flex-col items-center justify-between">
     //   <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
     //     {/* <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
