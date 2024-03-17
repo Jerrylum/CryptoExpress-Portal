@@ -1,7 +1,6 @@
 "use server";
 
 import { Good } from "@/chaincode/Models";
-import { readCSV } from "./API";
 
 const _data = new Map<string, Good>();
 
@@ -45,8 +44,9 @@ export async function init() {
 
   console.log("Initializing InternalGoodCollection database");
 
-  const records = await readCSV<Good>("db/goods.csv");
-  for (const record of records) {
-    await set(record);
+  const records = (await import("@/db/goods.json")) as Good[];
+  for (let i = 0; i < records.length; i++) {
+    // Must use traditional for
+    await set(records[i]);
   }
 }
