@@ -22,10 +22,7 @@ export async function search(search: string) {
     return list();
   } else {
     return (await list()).filter(
-      (good) =>
-        good.uuid.includes(search) ||
-        good.name.includes(search) ||
-        good.barcode.includes(search)
+      good => good.uuid.includes(search) || good.name.includes(search) || good.barcode.includes(search)
     );
   }
 }

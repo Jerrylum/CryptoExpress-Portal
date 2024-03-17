@@ -1,89 +1,62 @@
-import {
-  HashIdObject,
-  PublicKeyObject,
-  KeyHexString,
-  Address,
-  Courier,
-} from "../chaincode/Models";
-import {
-  objectToSha256Hash,
-  exportPublicKey,
-  generateKeyPair,
-  exportPrivateKey,
-} from "../chaincode/Utils";
+import { HashIdObject, PublicKeyObject, KeyHexString, Address, Courier } from "../chaincode/Models";
+import { objectToSha256Hash, exportPublicKey, generateKeyPair, exportPrivateKey, omitProperty } from "../chaincode/Utils";
 
 export interface PrivateKeyObject {
   privateKey: KeyHexString;
 }
 
-export class AddressWithPrivateKey
-  implements HashIdObject, PublicKeyObject, PrivateKeyObject
-{
-  hashId: string; // hash of the remaining fields
-  line1: string;
-  line2: string;
-  recipient: string;
-  publicKey: KeyHexString;
-  privateKey: KeyHexString;
+export class AddressWithPrivateKey implements HashIdObject, PublicKeyObject, PrivateKeyObject {
+  constructor(
+    public hashId: string,
+    public line1: string,
+    public line2: string,
+    public recipient: string,
+    public publicKey: KeyHexString,
+    public privateKey: KeyHexString
+  ) {}
 
-  constructor(line1: string, line2: string, recipient: string) {
+  static generate(line1: string, line2: string, recipient: string) {
     const keyPair = generateKeyPair();
-    this.line1 = line1;
-    this.line2 = line2;
-    this.recipient = recipient;
-    this.publicKey = exportPublicKey(keyPair.publicKey);
-    this.privateKey = exportPrivateKey(keyPair.privateKey);
-    this.hashId = objectToSha256Hash({
-      line1: this.line1,
-      line2: this.line2,
-      recipient: this.recipient,
-      publicKey: this.publicKey,
+    const publicKey = exportPublicKey(keyPair.publicKey);
+    const privateKey = exportPrivateKey(keyPair.privateKey);
+    const hashId = objectToSha256Hash({
+      line1,
+      line2,
+      recipient,
+      publicKey
     });
+    return new AddressWithPrivateKey(hashId, line1, line2, recipient, publicKey, privateKey);
   }
 
   toAddress(): Address {
-    return {
-      hashId: this.hashId,
-      line1: this.line1,
-      line2: this.line2,
-      recipient: this.recipient,
-      publicKey: this.privateKey,
-    };
+    return omitProperty(this, "privateKey");
   }
 }
 
-export class CourierWithPrivateKey
-  implements HashIdObject, PublicKeyObject, PrivateKeyObject
-{
-  hashId: string; // hash of the remaining fields
-  name: string;
-  company: string;
-  telephone: string;
-  publicKey: KeyHexString;
-  privateKey: KeyHexString;
+export class CourierWithPrivateKey implements HashIdObject, PublicKeyObject, PrivateKeyObject {
+  constructor(
+    public hashId: string,
+    public name: string,
+    public company: string,
+    public telephone: string,
+    public publicKey: KeyHexString,
+    public privateKey: KeyHexString
+  ) {}
 
-  constructor(name: string, company: string, telephone: string) {
+  static generate(name: string, company: string, telephone: string) {
     const keyPair = generateKeyPair();
-    this.name = name;
-    this.company = company;
-    this.telephone = telephone;
-    this.publicKey = exportPublicKey(keyPair.publicKey);
-    this.privateKey = exportPrivateKey(keyPair.privateKey);
-    this.hashId = objectToSha256Hash({
-      name: this.name,
-      company: this.company,
-      telephone: this.telephone,
-      publicKey: this.publicKey,
+    const publicKey = exportPublicKey(keyPair.publicKey);
+    const privateKey = exportPrivateKey(keyPair.privateKey);
+    const hashId = objectToSha256Hash({
+      name,
+      company,
+      telephone,
+      publicKey
     });
+    return new CourierWithPrivateKey(hashId, name, company, telephone, publicKey, privateKey);
   }
 
   toCourier(): Courier {
-    return {
-      hashId: this.hashId,
-      name: this.name,
-      company: this.company,
-      telephone: this.telephone,
-      publicKey: this.publicKey,
-    };
+    return omitProperty(this, "privateKey");
   }
 }

@@ -9,10 +9,10 @@ function RootAppBar() {
     <Navbar fluid rounded className="bg-gray-50">
       <Navbar.Toggle />
       <Navbar.Collapse className="md:mx-auto md:max-w-3xl md:w-full">
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link as={Link} href="/">
           Home
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link as={Link} href="/goods">
           Library
         </Navbar.Link>
         <Navbar.Link as={Link} href="#">

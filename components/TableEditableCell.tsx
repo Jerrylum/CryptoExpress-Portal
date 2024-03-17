@@ -1,9 +1,6 @@
 import React from "react";
 
-export function TableEditableCell(props: {
-  getter: () => string;
-  setter: (value: string) => void;
-}) {
+export function TableEditableCell(props: { getter: () => string; setter: (value: string) => void }) {
   const [value, setValue] = React.useState(props.getter());
 
   React.useEffect(() => {
@@ -28,19 +25,19 @@ export function TableEditableCell(props: {
         border: "none",
         fontSize: "1rem",
         padding: 0,
-        margin: 0,
+        margin: 0
       }}
       value={value}
-      onChange={(event) => {
+      onChange={event => {
         const proposed = event.target.value;
         setValue(proposed);
       }}
-      onKeyDown={(event) => {
+      onKeyDown={event => {
         if (event.key === "Enter") {
           submit(event);
         }
       }}
-      onBlur={(event) => {
+      onBlur={event => {
         submit(event);
       }}
     />

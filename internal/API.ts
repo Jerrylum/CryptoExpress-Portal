@@ -8,7 +8,7 @@ export async function readCSV<T>(fileName: string): Promise<T[]> {
     const parser = parse(fs.readFileSync(fileName), {
       delimiter: ",",
       columns: true,
-      skip_empty_lines: true,
+      skip_empty_lines: true
     });
     const records: any[] = [];
     parser.on("readable", function () {
