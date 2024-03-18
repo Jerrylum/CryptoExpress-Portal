@@ -49,6 +49,13 @@ export function CourierDataGrid(props: { search: string; semaphore: Semaphore })
     });
   }, [props.semaphore[0], props.search]);
 
+  const theme = useTheme([
+    getTheme(),
+    {
+      Table: `--data-table-library_grid-template-columns: 10% 20% 60% 60px;`
+    }
+  ]);
+
   if (isPending && rawData.length === 0) {
     // reduce the chance of flickering
     return <div>Loading...</div>;
@@ -88,13 +95,6 @@ export function CourierDataGrid(props: { search: string; semaphore: Semaphore })
   ] as Column<AnyCourierNode>[];
 
   const data = { nodes: rawData } as Data<AnyCourierNode>;
-
-  const theme = useTheme([
-    getTheme(),
-    {
-      Table: `--data-table-library_grid-template-columns: 10% 20% 60% 60px;`
-    }
-  ]);
 
   return (
     <CompactTable columns={columns} data={data} theme={theme} layout={{ custom: true }} style={{ width: "100%" }} />

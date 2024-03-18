@@ -55,6 +55,13 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
     });
   }, [props.semaphore[0], props.search]);
 
+  const theme = useTheme([
+    getTheme(),
+    {
+      Table: `--data-table-library_grid-template-columns: 100px minmax(0, 1fr) 120px;`
+    }
+  ]);
+
   if (isPending && rawData.length === 0) {
     // reduce the chance of flickering
     return <div>Loading...</div>;
@@ -143,13 +150,6 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
   ] as Column<AnyAddressNode>[];
 
   const data = { nodes: rawData } as Data<AnyAddressNode>;
-
-  const theme = useTheme([
-    getTheme(),
-    {
-      Table: `--data-table-library_grid-template-columns: 100px minmax(0, 1fr) 120px;`
-    }
-  ]);
 
   return (
     <CompactTable columns={columns} data={data} theme={theme} layout={{ custom: true }} style={{ width: "100%" }} />
