@@ -20,10 +20,11 @@ export function AddressBookPage() {
         <TextInput value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search" />
       </div> */}
 
-      <div className="w-full mb-4">
-        <AddressDataGrid search={search} semaphore={dataSemaphore} />
+      <div className="w-full mb-4 overflow-x-auto md:overflow-hidden">
+        <div className="w-[768px] md:w-full">
+          <AddressDataGrid search={search} semaphore={dataSemaphore} />
+        </div>
       </div>
     </div>
   );
 }
-

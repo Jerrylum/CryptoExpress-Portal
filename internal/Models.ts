@@ -15,15 +15,6 @@ export interface PrivateKeyObject {
   privateKey: KeyHexString;
 }
 
-export interface AddressWithPrivateKeyObject extends HashIdObject, PublicKeyObject, PrivateKeyObject {
-  hashId: string;
-  line1: string;
-  line2: string;
-  recipient: string;
-  publicKey: KeyHexString;
-  privateKey: KeyHexString;
-}
-
 export class AddressWithPrivateKey implements HashIdObject, PublicKeyObject, PrivateKeyObject {
   hashId!: string;
   line1!: string;
@@ -38,8 +29,7 @@ export function generateAddressWithPrivateKey(line1: string, line2: string, reci
   const publicKey = exportPublicKey(keyPair.publicKey);
   const privateKey = exportPrivateKey(keyPair.privateKey);
   const hashId = objectToSha256Hash({ line1, line2, recipient, publicKey });
-  // return new AddressWithPrivateKey(hashId, line1, line2, recipient, publicKey, privateKey);
-  return {hashId,line1,line2,recipient,publicKey,privateKey };
+  return { hashId, line1, line2, recipient, publicKey, privateKey };
 }
 
 export function importAddressWithPrivateKey(data: string): AddressWithPrivateKey {
@@ -71,62 +61,48 @@ export function fromAddressWithPrivateKeyToAddressObject(obj: AddressWithPrivate
   return omitProperty(obj, "privateKey");
 }
 
-export interface CourierWithPrivateKeyObject extends HashIdObject, PublicKeyObject, PrivateKeyObject {
-  hashId: string,
-  name: string,
-  company: string,
-  telephone: string,
-  publicKey: KeyHexString,
-  privateKey: KeyHexString
+export interface CourierWithPrivateKey extends HashIdObject, PublicKeyObject, PrivateKeyObject {
+  hashId: string;
+  name: string;
+  company: string;
+  telephone: string;
+  publicKey: KeyHexString;
+  privateKey: KeyHexString;
 }
 
+export function generateCourierWithPrivateKey(name: string, company: string, telephone: string) {
+  const keyPair = generateKeyPair();
+  const publicKey = exportPublicKey(keyPair.publicKey);
+  const privateKey = exportPrivateKey(keyPair.privateKey);
+  const hashId = objectToSha256Hash({ name, company, telephone, publicKey });
+  return { hashId, name, company, telephone, publicKey, privateKey };
+}
 
-export class CourierWithPrivateKey implements CourierWithPrivateKeyObject {
-  constructor(
-    public hashId: string,
-    public name: string,
-    public company: string,
-    public telephone: string,
-    public publicKey: KeyHexString,
-    public privateKey: KeyHexString
-  ) {}
-
-  static generate(name: string, company: string, telephone: string) {
-    const keyPair = generateKeyPair();
-    const publicKey = exportPublicKey(keyPair.publicKey);
-    const privateKey = exportPrivateKey(keyPair.privateKey);
-    const hashId = objectToSha256Hash({ name, company, telephone, publicKey });
-    return new CourierWithPrivateKey(hashId, name, company, telephone, publicKey, privateKey);
+export function importCourierWithPrivateKey(data: string): CourierWithPrivateKey {
+  const obj = z
+    .object({
+      hashId: z.string(),
+      name: z.string(),
+      company: z.string(),
+      telephone: z.string(),
+      publicKey: z.string(),
+      privateKey: z.string()
+    })
+    .parse(JSON.parse(data));
+  const objWithoutPrivateKey = omitProperty(obj, "privateKey");
+  if (isValidHashIdObject(objWithoutPrivateKey) === false) {
+    throw new Error("Invalid hashId");
   }
-
-  static import(data: string): CourierWithPrivateKey {
-    const obj = z
-      .object({
-        hashId: z.string(),
-        name: z.string(),
-        company: z.string(),
-        telephone: z.string(),
-        publicKey: z.string(),
-        privateKey: z.string()
-      })
-      .parse(JSON.parse(data));
-    const objWithoutPrivateKey = omitProperty(obj, "privateKey");
-    if (isValidHashIdObject(objWithoutPrivateKey) === false) {
-      throw new Error("Invalid hashId");
-    }
-    if (verifyObject(obj, signObject(obj, obj.privateKey), obj.publicKey) === false) {
-      throw new Error("Invalid public key private key pair");
-    }
-    return new CourierWithPrivateKey(obj.hashId, obj.name, obj.company, obj.telephone, obj.publicKey, obj.privateKey);
+  if (verifyObject(obj, signObject(obj, obj.privateKey), obj.publicKey) === false) {
+    throw new Error("Invalid public key private key pair");
   }
+  return obj;
+}
 
-  export(): string {
-    return JSON.stringify(this);
-  }
+export function exportCourierWithPrivateKey(obj: CourierWithPrivateKey): string {
+  return JSON.stringify(obj);
+}
 
-  toCourierObject(): Courier {
-    return omitProperty(this, "privateKey");
-  }
-
-  // toObject(): 
+export function fromCourierWithPrivateKeyToCourierObject(obj: CourierWithPrivateKey): Courier {
+  return omitProperty(obj, "privateKey");
 }

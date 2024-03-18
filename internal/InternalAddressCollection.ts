@@ -1,6 +1,7 @@
 "use server";
 
 import { AddressWithPrivateKey, generateAddressWithPrivateKey, importAddressWithPrivateKey } from "./Models";
+import * as AddressCollection from "./AddressCollection";
 
 let _data: Map<string, AddressWithPrivateKey>;
 
@@ -16,7 +17,7 @@ async function data() {
       await add(records[i]);
     }
   }
-
+  
   return _data;
 }
 
@@ -58,9 +59,9 @@ export async function releaseToPublic(hashId: string) {
     throw new Error("Address not found");
   }
 
-  await add(addr);
+  await AddressCollection.add(addr);
 }
 
 export async function removeFromPublic(hashId: string) {
-  await remove(hashId);
+  await AddressCollection.remove(hashId);
 }

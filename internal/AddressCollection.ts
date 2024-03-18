@@ -2,6 +2,7 @@
 
 import { Address } from "@/chaincode/Models";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
+import { AddressWithPrivateKey } from "./Models";
 
 export async function add(arg0: Address) {
   // TODO
@@ -11,10 +12,16 @@ export async function remove(arg0: string) {
   // TODO
 }
 
-export async function list() {
-  // TODO: return a list of public addresses
+export type AddressQueryingResult = ((Address | AddressWithPrivateKey) & { isPublic: boolean });
 
-  return [...(await InternalAddressCollection.list())];
+export async function list(): Promise<AddressQueryingResult[]> {
+  const publicList: Address[] = [];
+  const publicHashIdList = publicList.map(addr => addr.hashId);
+  const internalList = await InternalAddressCollection.list();
+  return [
+    ...publicList.map(addr => ({ ...addr, isPublic: true })),
+    ...internalList.map(addr => ({ ...addr, isPublic: publicHashIdList.includes(addr.hashId) }))
+  ];
 }
 
 export async function search(search: string) {

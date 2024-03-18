@@ -1,5 +1,5 @@
 import fs from "fs";
-import { AddressWithPrivateKey, CourierWithPrivateKey } from "@/internal/Models";
+import { AddressWithPrivateKey, CourierWithPrivateKey, generateAddressWithPrivateKey, generateCourierWithPrivateKey } from "@/internal/Models";
 import { faker } from '@faker-js/faker';
 import { Good } from "@/chaincode/Models";
 import { randomUUID } from "@/internal/Utils";
@@ -18,7 +18,7 @@ fs.writeFileSync("db/goods.json", JSON.stringify(goods));
 
 const addrWithPKs: AddressWithPrivateKey[] = [];
 for (let i = 0; i < 10; i++) {
-  const obj = AddressWithPrivateKey.generate(
+  const obj = generateAddressWithPrivateKey(
     faker.location.streetAddress(),
     faker.location.secondaryAddress(),
     faker.person.fullName()
@@ -30,7 +30,7 @@ fs.writeFileSync("db/addresses.json", JSON.stringify(addrWithPKs));
 
 const courierWithPKs: CourierWithPrivateKey[] = [];
 for (let i = 0; i < 10; i++) {
-  const obj = CourierWithPrivateKey.generate(
+  const obj = generateCourierWithPrivateKey(
     faker.person.fullName(),
     faker.company.name(),
     faker.phone.number()

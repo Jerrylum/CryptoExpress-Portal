@@ -1,40 +1,56 @@
 "use server";
 
-import { CourierWithPrivateKey } from "./Models";
+import { CourierWithPrivateKey, generateCourierWithPrivateKey, importCourierWithPrivateKey } from "./Models";
 import * as CourierCollection from "@/internal/CourierCollection";
 
-const _data = new Map<string, CourierWithPrivateKey>();
+let _data: Map<string, CourierWithPrivateKey>;
+
+async function data() {
+  if (_data === undefined) {
+    _data = new Map<string, CourierWithPrivateKey>();
+
+    console.log("Initializing InternalCourierCollection database");
+
+    const records = (await import("@/db/couriers.json")) as CourierWithPrivateKey[];
+    for (let i = 0; i < records.length; i++) {
+      // Must use traditional for
+      await add(records[i]);
+    }
+  }
+
+  return _data;
+}
 
 export async function generate(name: string, company: string, telephone: string): Promise<CourierWithPrivateKey> {
-  const courierWithPK = CourierWithPrivateKey.generate(name, company, telephone);
+  const courierWithPK = generateCourierWithPrivateKey(name, company, telephone);
   await add(courierWithPK);
   return courierWithPK;
 }
 
 export async function importUnsafe(unsafeData: string): Promise<CourierWithPrivateKey> {
-  const courierWithPK = CourierWithPrivateKey.import(unsafeData);
+  const courierWithPK = importCourierWithPrivateKey(unsafeData);
   await add(courierWithPK);
   return courierWithPK;
 }
 
 export async function add(courierWithPK: CourierWithPrivateKey) {
-  _data.set(courierWithPK.hashId, courierWithPK);
+  (await data()).set(courierWithPK.hashId, courierWithPK);
 }
 
 export async function remove(hashId: string) {
-  _data.delete(hashId);
+  (await data()).delete(hashId);
 }
 
 export async function list(): Promise<CourierWithPrivateKey[]> {
-  return [..._data.values()];
+  return [...(await data()).values()];
 }
 
 export async function has(hashId: string): Promise<boolean> {
-  return _data.has(hashId);
+  return (await data()).has(hashId);
 }
 
 export async function get(hashId: string): Promise<CourierWithPrivateKey | undefined> {
-  return _data.get(hashId);
+  return (await data()).get(hashId);
 }
 
 export async function releaseToPublic(hashId: string) {
@@ -43,36 +59,9 @@ export async function releaseToPublic(hashId: string) {
     throw new Error("Courier not found");
   }
 
-  await CourierCollection.add(courier.toCourierObject());
+  await add(courier);
 }
 
 export async function removeFromPublic(hashId: string) {
-  await CourierCollection.remove(hashId);
-}
-
-let initial = false;
-
-export async function init() {
-  if (initial) {
-    return;
-  }
-  initial = true;
-
-  console.log("Initializing InternalCourierCollection database");
-
-  type CourierWithPrivateKeyData = Omit<CourierWithPrivateKey, "export" | "toCourierObject">;
-  const records = (await import("@/db/couriers.json")) as CourierWithPrivateKeyData[];
-  for (let i = 0; i < records.length; i++) {
-    // Must use traditional for
-    await add(
-      new CourierWithPrivateKey(
-        records[i].hashId,
-        records[1].name,
-        records[i].company,
-        records[i].telephone,
-        records[i].publicKey,
-        records[i].privateKey
-      )
-    );
-  }
+  await remove(hashId);
 }

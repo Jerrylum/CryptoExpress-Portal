@@ -108,7 +108,7 @@ export function GoodDataGrid(props: { search: string; semaphore: Semaphore }) {
   const theme = useTheme([
     getTheme(),
     {
-      Table: `--data-table-library_grid-template-columns: 10% 60% minmax(0, 1fr) 60px;`
+      Table: `--data-table-library_grid-template-columns: 80px 60% minmax(0, 1fr) 60px;`
     }
   ]);
 

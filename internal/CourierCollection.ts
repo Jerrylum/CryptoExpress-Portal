@@ -14,3 +14,13 @@ export async function remove(arg0: string) {
 export async function list() {
   return [...(await InternalCourierCollection.list())];
 }
+
+export async function search(search: string) {
+  if (search === "") {
+    return list();
+  } else {
+    return (await list()).filter(
+      courier => courier.company.includes(search) || courier.name.includes(search) || courier.telephone.includes(search)
+    );
+  }
+}
