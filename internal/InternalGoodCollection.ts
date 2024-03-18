@@ -2,18 +2,36 @@
 
 import { Good } from "@/chaincode/Models";
 
-const _data = new Map<string, Good>();
+// const (await data()) = new Map<string, Good>();
+
+let _data: Map<string, Good>;
+
+async function data() {
+  if (_data === undefined) {
+    _data = new Map<string, Good>();
+
+    console.log("Initializing InternalGoodCollection database");
+
+    const records = (await import("@/db/goods.json")) as Good[];
+    for (let i = 0; i < records.length; i++) {
+      // Must use traditional for
+      await set(records[i]);
+    }
+  }
+
+  return _data;
+}
 
 export async function set(good: Good) {
-  _data.set(good.uuid, good);
+  (await data()).set(good.uuid, good);
 }
 
 export async function remove(uuid: string) {
-  _data.delete(uuid);
+  (await data()).delete(uuid);
 }
 
 export async function list() {
-  return [..._data.values()];
+  return [...(await data()).values()];
 }
 
 export async function search(search: string) {
@@ -27,11 +45,11 @@ export async function search(search: string) {
 }
 
 export async function has(uuid: string) {
-  return _data.has(uuid);
+  return (await data()).has(uuid);
 }
 
 export async function get(uuid: string) {
-  return _data.get(uuid);
+  return (await data()).get(uuid);
 }
 
 let initial = false;

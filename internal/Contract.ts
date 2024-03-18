@@ -1,3 +1,5 @@
+"use server";
+
 export async function createRouteProposal() {}
 
 export async function getAllRouteProposals() {}

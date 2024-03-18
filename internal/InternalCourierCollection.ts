@@ -1,3 +1,5 @@
+"use server";
+
 import { CourierWithPrivateKey } from "./Models";
 import * as CourierCollection from "@/internal/CourierCollection";
 
@@ -41,7 +43,7 @@ export async function releaseToPublic(hashId: string) {
     throw new Error("Courier not found");
   }
 
-  await CourierCollection.add(courier.toCourier());
+  await CourierCollection.add(courier.toCourierObject());
 }
 
 export async function removeFromPublic(hashId: string) {
@@ -58,7 +60,7 @@ export async function init() {
 
   console.log("Initializing InternalCourierCollection database");
 
-  type CourierWithPrivateKeyData = Omit<CourierWithPrivateKey, "export" | "toCourier">;
+  type CourierWithPrivateKeyData = Omit<CourierWithPrivateKey, "export" | "toCourierObject">;
   const records = (await import("@/db/couriers.json")) as CourierWithPrivateKeyData[];
   for (let i = 0; i < records.length; i++) {
     // Must use traditional for
