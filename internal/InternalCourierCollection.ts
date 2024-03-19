@@ -59,9 +59,9 @@ export async function releaseToPublic(hashId: string) {
     throw new Error("Courier not found");
   }
 
-  await add(courier);
+  await CourierCollection.add(courier);
 }
 
 export async function removeFromPublic(hashId: string) {
-  await remove(hashId);
+  await CourierCollection.remove(hashId);
 }

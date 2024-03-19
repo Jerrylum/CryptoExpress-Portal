@@ -9,6 +9,8 @@ import { Column, CompactTable } from "@table-library/react-table-library/compact
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { Tooltip } from "flowbite-react";
+import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
+import { AddressWithPrivateKey } from "@/internal/Models";
 
 class AnyAddressNode implements TableNode {
   constructor(public _obj: AddressCollection.AddressQueryingResult) {}
@@ -95,10 +97,11 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
                 className="fill-gray-200 hover:fill-red-600 m-auto"
                 onClick={async () => {
                   // await InternalGoodCollection.remove(item.uuid);
+                  await InternalAddressCollection.removeFromPublic(item.hashId);
                   props.semaphore[1]();
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M11 8.17 6.49 3.66C8.07 2.61 9.96 2 12 2c5.52 0 10 4.48 10 10 0 2.04-.61 3.93-1.66 5.51l-1.46-1.46C19.59 14.87 20 13.48 20 12c0-3.35-2.07-6.22-5-7.41V5c0 1.1-.9 2-2 2h-2zm10.19 13.02-1.41 1.41-2.27-2.27C15.93 21.39 14.04 22 12 22 6.48 22 2 17.52 2 12c0-2.04.61-3.93 1.66-5.51L1.39 4.22 2.8 2.81zM11 18c-1.1 0-2-.9-2-2v-1l-4.79-4.79C4.08 10.79 4 11.38 4 12c0 4.08 3.05 7.44 7 7.93z"></path>
+                  <path d="M11 8.17 6.49 3.66C8.07 2.61 9.96 2 12 2c5.52 0 10 4.48 10 10 0 2.04-.61 3.93-1.66 5.51l-1.46-1.46C19.59 14.87 20 13.48 20 12c0-3.35-2.07-6.22-5-7.41V5c0 1.1-.9 2-2 2h-2zm10.19 13.02-1.41 1.41-2.27-2.27C15.93 21.39 14.04 22 12 22 6.48 22 2 17.52 2 12c0-2.04.61-3.93 1.66-5.51L1.39 4.22 2.8 2.81zM11 18c-1.1 0-2-.9-2-2v-1l-4.79-4.79C4.08 10.79 4 11.38 4 12c0 4.08 3.05 7.44 7 7.93z"></path>
                 </svg>
               </button>
             </Tooltip>
@@ -108,6 +111,7 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
                 className="fill-gray-200 hover:fill-gray-600 m-auto"
                 onClick={async () => {
                   // await InternalGoodCollection.remove(item.uuid);
+                  await InternalAddressCollection.releaseToPublic(item.hashId);
                   props.semaphore[1]();
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
@@ -121,7 +125,7 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
               <button
                 className="fill-gray-200 hover:fill-red-600 m-auto"
                 onClick={async () => {
-                  // await InternalGoodCollection.remove(item.uuid);
+                  await InternalAddressCollection.remove(item.hashId);
                   props.semaphore[1]();
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
@@ -135,7 +139,30 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
               <button
                 className="fill-gray-200 hover:fill-gray-600 m-auto"
                 onClick={async () => {
-                  // await InternalGoodCollection.remove(item.uuid);
+                  // isInInternal is true, so we can safely cast to AddressWithPrivateKey
+                  const privateKey = (item._obj as AddressWithPrivateKey).privateKey;
+                  console.log(privateKey);
+
+                  // Step 1: Create a Blob from the private key string
+                  const blob = new Blob([privateKey], { type: "application/x-pem-file" });
+
+                  // Step 2: Generate a URL for the Blob
+                  const url = URL.createObjectURL(blob);
+
+                  // Step 3: Create a hidden anchor element
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = "privateKey.pem"; // Set the desired filename
+
+                  // Append the link to the body
+                  document.body.appendChild(link);
+
+                  // Step 4: Trigger the download
+                  link.click();
+
+                  // Clean up: remove the link and revoke the Blob URL
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
                   props.semaphore[1]();
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
