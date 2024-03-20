@@ -12,7 +12,7 @@ export async function remove(arg0: string) {
   // TODO
 }
 
-export type AddressQueryingResult = ((Address | AddressWithPrivateKey) & { isPublic: boolean });
+export type AddressQueryingResult = (Address | AddressWithPrivateKey) & { isPublic: boolean };
 
 export async function list(): Promise<AddressQueryingResult[]> {
   const publicList: Address[] = [];
@@ -29,7 +29,11 @@ export async function search(search: string) {
     return list();
   } else {
     return (await list()).filter(
-      address => address.line1.includes(search) || address.line2.includes(search) || address.recipient.includes(search)
+      address =>
+        address.hashId.includes(search) ||
+        address.line1.includes(search) ||
+        address.line2.includes(search) ||
+        address.recipient.includes(search)
     );
   }
 }

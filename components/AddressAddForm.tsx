@@ -20,9 +20,9 @@ export function AddressAddForm(props: { semaphore: Semaphore }) {
 
   return (
     <form ref={ref} action={onAddAddress} className="w-full flex flex-wrap gap-2">
-      <TextInput name="line1" type="text" placeholder="line1" required className="flex-2" />
-      <TextInput name="line2" type="text" placeholder="line2" required className="flex-2" />
-      <TextInput name="recipient" type="text" placeholder="recipient" required className="flex-2" />
+      <TextInput name="recipient" type="text" placeholder="Recipient" required className="flex-2" />
+      <TextInput name="line1" type="text" placeholder="Line 1" required className="flex-2" />
+      <TextInput name="line2" type="text" placeholder="Line 2" required className="flex-2" />
       <Button color="gray" type="submit" className="flex-none">
         Add
       </Button>
