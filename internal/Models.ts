@@ -54,8 +54,8 @@ export function importAddressWithPrivateKey(data: string): AddressWithPrivateKey
 }
 
 export function exportAddressWithPrivateKey(obj: AddressWithPrivateKey): string {
-  const { hashId, line1, line2, recipient, publicKey } = obj;
-  return JSON.stringify({ hashId, line1, line2, recipient, publicKey });
+  const { hashId, line1, line2, recipient, publicKey, privateKey } = obj;
+  return JSON.stringify({ hashId, line1, line2, recipient, publicKey, privateKey });
 }
 
 export function fromAddressWithPrivateKeyToAddressObject(obj: AddressWithPrivateKey): Address {
@@ -101,8 +101,8 @@ export function importCourierWithPrivateKey(data: string): CourierWithPrivateKey
 }
 
 export function exportCourierWithPrivateKey(obj: CourierWithPrivateKey): string {
-  const { hashId, name, company, telephone, publicKey } = obj;
-  return JSON.stringify({ hashId, name, company, telephone, publicKey });
+  const { hashId, name, company, telephone, publicKey, privateKey } = obj;
+  return JSON.stringify({ hashId, name, company, telephone, publicKey, privateKey });
 }
 
 export function fromCourierWithPrivateKeyToCourierObject(obj: CourierWithPrivateKey): Courier {
