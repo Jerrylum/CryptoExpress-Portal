@@ -10,6 +10,7 @@ import { Column, CompactTable } from "@table-library/react-table-library/compact
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { Tooltip } from "flowbite-react";
+import { TableCopyableCell } from "./TableCopyableCell";
 
 class AnyCourierNode implements TableNode {
   constructor(public _obj: CourierCollection.CourierQueryingResult) {}
@@ -72,7 +73,7 @@ export function CourierDataGrid(props: { search: string; semaphore: Semaphore })
     {
       label: "Hash ID",
       resize: true,
-      renderCell: item => <span title={item.id}>{item.id}</span>
+      renderCell: item => <TableCopyableCell value={item.id} />
     },
     {
       label: "Detail",
@@ -122,7 +123,7 @@ export function CourierDataGrid(props: { search: string; semaphore: Semaphore })
               <button
                 className="fill-gray-200 hover:fill-red-600 m-auto"
                 onClick={async () => {
-                  await CourierCollection.remove(item.hashId);
+                  await InternalCourierCollection.remove(item.hashId);
                   props.semaphore[1]();
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">

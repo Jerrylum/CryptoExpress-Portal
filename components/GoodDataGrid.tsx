@@ -10,6 +10,7 @@ import { Good } from "@/chaincode/Models";
 import * as InternalGoodCollection from "@/internal/InternalGoodCollection";
 import { TableEditableCell } from "./TableEditableCell";
 import { Semaphore } from "./SemaphoreHook";
+import { TableCopyableCell } from "./TableCopyableCell";
 
 class GoodNode implements TableNode {
   constructor(public _obj: Good) {}
@@ -60,7 +61,7 @@ export function GoodDataGrid(props: { search: string; semaphore: Semaphore }) {
     {
       label: "UUID",
       resize: true,
-      renderCell: item => <span title={item.id}>{item.id}</span>
+      renderCell: item => <TableCopyableCell value={item.id} />
     },
     {
       label: "Name",

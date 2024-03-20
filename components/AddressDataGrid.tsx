@@ -11,6 +11,7 @@ import { getTheme } from "@table-library/react-table-library/baseline";
 import { Tooltip } from "flowbite-react";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import { AddressWithPrivateKey, exportAddressWithPrivateKey } from "@/internal/Models";
+import { TableCopyableCell } from "./TableCopyableCell";
 
 class AnyAddressNode implements TableNode {
   constructor(public _obj: AddressCollection.AddressQueryingResult) {}
@@ -73,7 +74,7 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
     {
       label: "Hash ID",
       resize: true,
-      renderCell: item => <span title={item.id}>{item.id}</span>
+      renderCell: item => <TableCopyableCell value={item.id} />
     },
     {
       label: "Detail",
