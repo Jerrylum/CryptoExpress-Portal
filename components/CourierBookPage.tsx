@@ -19,7 +19,7 @@ export function CourierBookPage() {
       </div>
 
       <div className="w-full mb-4">
-        <TextInput value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search" />
+        <TextInput value={search} onChange={e => setSearch(e.target.value)} placeholder="Search" />
       </div>
 
       <div className="w-full mb-4 overflow-x-auto md:overflow-hidden">

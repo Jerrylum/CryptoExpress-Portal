@@ -17,7 +17,7 @@ async function data() {
       await add(records[i]);
     }
   }
-  
+
   return _data;
 }
 

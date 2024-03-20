@@ -22,7 +22,7 @@ export function CourierAddForm(props: { semaphore: Semaphore }) {
     <form ref={ref} action={onAddAddress} className="w-full flex flex-wrap gap-2">
       <TextInput name="name" type="text" placeholder="Name" required className="flex-2" />
       <TextInput name="company" type="text" placeholder="Company" required className="flex-2" />
-      <TextInput name="telephone" type="text" placeholder="Telephone" required className="flex-2" maxLength={8}/>
+      <TextInput name="telephone" type="text" placeholder="Telephone" required className="flex-2" maxLength={8} />
       <Button color="gray" type="submit" className="flex-none">
         Add
       </Button>
