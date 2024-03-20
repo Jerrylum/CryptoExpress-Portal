@@ -1,0 +1,48 @@
+.QRScanner {
+  & {
+    border: none !important;
+  }
+
+  > div {
+    > [alt="Info icon"] {
+      display: none;
+    }
+  }
+
+  > [id="qr-code-scanner-region__scan_region"] {
+    > img {
+      display: none;
+    }
+  }
+
+  > [id="qr-code-scanner-region__dashboard"] {
+    > [id="qr-code-scanner-region__dashboard_section"] {
+      > div:first-child {
+        margin-bottom: 0.5rem;
+        display: inline-block;
+
+        > [id="qr-code-scanner-region__dashboard_section_csr"] {
+          > div {
+            text-align: left !important;
+
+            > button {
+              // Adopted from https://flowbite.com/docs/components/buttons/
+              @apply text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700;
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+      > div:last-child {
+        text-align: left !important;
+        display: inline-block;
+        
+        > [id="html5-qrcode-anchor-scan-type-change"] {
+          @apply text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700;
+          text-decoration: none !important;
+        }
+      }
+    }
+  }
+}
