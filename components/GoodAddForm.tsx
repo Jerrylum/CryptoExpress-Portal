@@ -24,7 +24,7 @@ export function GoodAddForm(props: { semaphore: Semaphore }) {
   }
 
   return (
-    <form ref={ref} action={onAddGood} className="w-full flex gap-2">
+    <form ref={ref} action={onAddGood} className="w-full flex flex-wrap gap-2">
       <TextInput name="name" type="text" placeholder="Name" required className="flex-1" />
       <TextInput name="barcode" type="text" placeholder="Barcode" required className="flex-2" />
       <Button color="gray" type="submit" className="flex-none">
