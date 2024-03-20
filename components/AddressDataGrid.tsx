@@ -10,7 +10,7 @@ import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { Tooltip } from "flowbite-react";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
-import { AddressWithPrivateKey } from "@/internal/Models";
+import { AddressWithPrivateKey, exportAddressWithPrivateKey } from "@/internal/Models";
 
 class AnyAddressNode implements TableNode {
   constructor(public _obj: AddressCollection.AddressQueryingResult) {}
@@ -139,31 +139,7 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
               <button
                 className="fill-gray-200 hover:fill-gray-600 m-auto"
                 onClick={async () => {
-                  // isInInternal is true, so we can safely cast to AddressWithPrivateKey
-                  const privateKey = (item._obj as AddressWithPrivateKey).privateKey;
-                  console.log(privateKey);
-
-                  // Step 1: Create a Blob from the private key string
-                  const blob = new Blob([privateKey], { type: "application/x-pem-file" });
-
-                  // Step 2: Generate a URL for the Blob
-                  const url = URL.createObjectURL(blob);
-
-                  // Step 3: Create a hidden anchor element
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = "privateKey.pem"; // Set the desired filename
-
-                  // Append the link to the body
-                  document.body.appendChild(link);
-
-                  // Step 4: Trigger the download
-                  link.click();
-
-                  // Clean up: remove the link and revoke the Blob URL
-                  document.body.removeChild(link);
-                  URL.revokeObjectURL(url);
-                  props.semaphore[1]();
+                  navigator.clipboard.writeText(exportAddressWithPrivateKey(item._obj as AddressWithPrivateKey));
                 }}>
                 <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
                   <path d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2"></path>
