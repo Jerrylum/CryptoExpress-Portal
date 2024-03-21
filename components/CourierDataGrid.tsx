@@ -11,6 +11,7 @@ import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { Tooltip } from "flowbite-react";
 import { TableCopyableCell } from "./TableCopyableCell";
+import { TableEditableCell } from "./TableEditableCell";
 
 class AnyCourierNode implements TableNode {
   constructor(public _obj: CourierCollection.CourierQueryingResult) {}
@@ -79,11 +80,83 @@ export function CourierDataGrid(props: { search: string; semaphore: Semaphore })
       label: "Detail",
       renderCell: item => (
         <>
-          <b>{item.name}</b>
+          <b>
+            <TableEditableCell
+              getter={() => item.company}
+              setter={async value => {
+                if (item.isPublic) {
+                  await CourierCollection.add({
+                    hashId: item.hashId,
+                    company: value,
+                    name: item.name,
+                    telephone: item.telephone,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalCourierCollection.add({
+                  hashId: item.hashId,
+                  company: value,
+                  name: item.name,
+                  telephone: item.telephone,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as CourierWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </b>
           <br />
-          <span title={item.company}>{item.company}</span>
+          <span title={item.name}>
+            <TableEditableCell
+              getter={() => item.name}
+              setter={async value => {
+                if (item.isPublic) {
+                  await CourierCollection.add({
+                    hashId: item.hashId,
+                    company: item.company,
+                    name: value,
+                    telephone: item.telephone,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalCourierCollection.add({
+                  hashId: item.hashId,
+                  company: item.company,
+                  name: value,
+                  telephone: item.telephone,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as CourierWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </span>
           <br />
-          <span title={item.telephone}>{item.telephone}</span>
+          <span title={item.telephone}>
+            <TableEditableCell
+              getter={() => item.telephone}
+              setter={async value => {
+                if (item.isPublic) {
+                  await CourierCollection.add({
+                    hashId: item.hashId,
+                    company: item.company,
+                    name: item.name,
+                    telephone: value,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalCourierCollection.add({
+                  hashId: item.hashId,
+                  company: item.company,
+                  name: item.name,
+                  telephone: value,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as CourierWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </span>
         </>
       )
     },

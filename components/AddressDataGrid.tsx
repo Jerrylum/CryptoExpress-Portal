@@ -12,6 +12,7 @@ import { Tooltip } from "flowbite-react";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import { AddressWithPrivateKey, exportAddressWithPrivateKey } from "@/internal/Models";
 import { TableCopyableCell } from "./TableCopyableCell";
+import { TableEditableCell } from "./TableEditableCell";
 
 class AnyAddressNode implements TableNode {
   constructor(public _obj: AddressCollection.AddressQueryingResult) {}
@@ -80,11 +81,83 @@ export function AddressDataGrid(props: { search: string; semaphore: Semaphore })
       label: "Detail",
       renderCell: item => (
         <>
-          <b>{item.recipient}</b>
+          <b>
+            <TableEditableCell
+              getter={() => item.recipient}
+              setter={async value => {
+                if (item.isPublic) {
+                  await AddressCollection.add({
+                    hashId: item.hashId,
+                    line1: item.line1,
+                    line2: item.line2,
+                    recipient: value,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalAddressCollection.add({
+                  hashId: item.hashId,
+                  line1: item.line1,
+                  line2: item.line2,
+                  recipient: value,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as AddressWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </b>
           <br />
-          <span title={item.line1}>{item.line1}</span>
+          <span title={item.line1}>
+            <TableEditableCell
+              getter={() => item.line1}
+              setter={async value => {
+                if (item.isPublic) {
+                  await AddressCollection.add({
+                    hashId: item.hashId,
+                    line1: value,
+                    line2: item.line2,
+                    recipient: item.recipient,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalAddressCollection.add({
+                  hashId: item.hashId,
+                  line1: value,
+                  line2: item.line2,
+                  recipient: item.recipient,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as AddressWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </span>
           <br />
-          <span title={item.line2}>{item.line2}</span>
+          <span title={item.line2}>
+            <TableEditableCell
+              getter={() => item.line2}
+              setter={async value => {
+                if (item.isPublic) {
+                  await AddressCollection.add({
+                    hashId: item.hashId,
+                    line1: item.line1,
+                    line2: value,
+                    recipient: item.recipient,
+                    publicKey: item._obj.publicKey
+                  });
+                  return;
+                }
+                await InternalAddressCollection.add({
+                  hashId: item.hashId,
+                  line1: item.line1,
+                  line2: value,
+                  recipient: item.recipient,
+                  publicKey: item._obj.publicKey,
+                  privateKey: (item._obj as AddressWithPrivateKey).privateKey
+                });
+              }}
+            />
+          </span>
         </>
       )
     },
