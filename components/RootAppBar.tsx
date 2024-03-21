@@ -18,11 +18,14 @@ function RootAppBar() {
         <Navbar.Link as={Link} href="#">
           Routes
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link as={Link} href="/addresses">
           Addresses
         </Navbar.Link>
-        <Navbar.Link as={Link} href="#">
+        <Navbar.Link as={Link} href="/couriers">
           Couriers
+        </Navbar.Link>
+        <Navbar.Link as={Link} href="/QRScanner">
+          QRScanner
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
