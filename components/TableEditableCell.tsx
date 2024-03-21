@@ -25,7 +25,8 @@ export function TableEditableCell(props: { getter: () => string; setter: (value:
         border: "none",
         fontSize: "1rem",
         padding: 0,
-        margin: 0
+        margin: 0,
+        boxShadow: "none"
       }}
       value={value}
       onChange={event => {
