@@ -7,3 +7,12 @@ export function randomUUID() {
   }
   return rtn; 
 }
+
+export type WithId<T> = T & { id: string };
+
+export function withId<T>(item: T, idKey: keyof T) {
+  return {
+    ...item,
+    id: item[idKey] as string,
+  };
+}
