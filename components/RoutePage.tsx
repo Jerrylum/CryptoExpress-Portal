@@ -1,71 +1,126 @@
 "use client";
 
-import {
-  Button,
-  Card,
-  Datepicker,
-  Dropdown,
-  FlowbiteDatepickerTheme,
-  Modal,
-  Popover,
-  TextInput,
-  Timeline
-} from "flowbite-react";
-import React, { startTransition } from "react";
+import { Button, Datepicker, Dropdown, Modal, TextInput, Timeline } from "flowbite-react";
+import React from "react";
 import * as AddressCollection from "@/internal/AddressCollection";
+import * as CourierCollection from "@/internal/CourierCollection";
 import * as InternalGoodCollection from "@/internal/InternalGoodCollection";
-import { HiArrowNarrowRight, HiTrash, HiRefresh, HiOutlinePlus, HiOutlineMinus } from "react-icons/hi";
-import { Good } from "@/chaincode/Models";
+import { HiTrash, HiRefresh, HiOutlinePlus, HiOutlineMinus, HiArrowNarrowDown } from "react-icons/hi";
+import { Address, Courier, Good } from "@/chaincode/Models";
 import { Column } from "@table-library/react-table-library/types/compact";
-import { TableNode, Data } from "@table-library/react-table-library/types/table";
+import { Data } from "@table-library/react-table-library/types/table";
 import { TableCopyableCell } from "./TableCopyableCell";
-import { TableEditableCell } from "./TableEditableCell";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { CompactTable } from "@table-library/react-table-library/compact";
 import { useSemaphore } from "./SemaphoreHook";
-import { WithId, withId } from "@/internal/Utils";
+import { WithId, useMobxStorage, withId } from "@/internal/Utils";
+import { observer } from "mobx-react";
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
+// observable
 export interface StopAndTransport {
   address: string | null; // Hash ID
-  expectedArrivalTimestamp: number;
-  input: { [goodUuid: string]: number };
-  output: { [goodUuid: string]: number };
+  expectedArrivalTimestamp: number; // unix timestamp
+  input: GoodAndQuantity[];
+  output: GoodAndQuantity[];
   courier: string | null;
   transportInfo: string;
 }
 
-interface g {}
+// observable
+class EditableTimeline {
+  addressList: Address[] = [];
 
-function EditableTimelineItem(props: {
-  /* sat: StopAndTransport */
-}) {
-  // React.useEffect(() => {
-  //   startTransition(() => {
-  //     AddressCollection.search(props.search).then(list => {
-  //       setRawData(list.map(addr => new AnyAddressNode(addr)));
-  //     });
-  //   });
-  // }, [props.semaphore[0], props.search]);
+  async refreshAddressList() {
+    return AddressCollection.list().then(list => {
+      runInAction(() => {
+        this.addressList = list;
+      });
+    });
+  }
 
-  const [input, setInput] = React.useState<GoodAndQuantity[]>([]);
-  const [output, setOutput] = React.useState<GoodAndQuantity[]>([]);
+  courierList: Courier[] = [];
+
+  async refreshCourierList() {
+    return CourierCollection.list().then(list => {
+      runInAction(() => {
+        this.courierList = list;
+      });
+    });
+  }
+
+  stopAndTransportList: StopAndTransport[] = [];
+
+  isLastStop(sat: StopAndTransport): boolean {
+    return this.stopAndTransportList[this.stopAndTransportList.length - 1] === sat;
+  }
+
+  addDestination() {
+    this.stopAndTransportList.push({
+      address: null,
+      expectedArrivalTimestamp: Math.floor(Date.now() / 1000),
+      input: [],
+      output: [],
+      courier: null,
+      transportInfo: ""
+    });
+  }
+
+  removeDestination(sat: StopAndTransport) {
+    const idx = this.stopAndTransportList.indexOf(sat);
+    if (idx !== -1) {
+      this.stopAndTransportList.splice(idx, 1);
+    }
+  }
+
+  constructor() {
+    this.addDestination();
+    this.addDestination();
+
+    makeAutoObservable(this, undefined, { deep: true });
+  }
+}
+
+const EditableTimelineItem = observer((props: { sat: StopAndTransport; timeline: EditableTimeline }) => {
+  const input = props.sat.input;
+  const output = props.sat.output;
+
+  const date = new Date(props.sat.expectedArrivalTimestamp * 1000);
+
+  const addr = props.timeline.addressList.find(address => address.hashId === props.sat.address);
+  const courier = props.timeline.courierList.find(courier => courier.hashId === props.sat.courier);
+
   return (
     <Timeline.Item>
-      <Timeline.Point icon={HiTrash} />
+      <Timeline.Point icon={HiArrowNarrowDown} />
       <Timeline.Content>
-        <h3 className="mt-2">Address:</h3>
+        {props.timeline.stopAndTransportList.length > 2 && (
+          <Button
+            color="gray"
+            onClick={() => {
+              props.timeline.removeDestination(props.sat);
+            }}>
+            Remove Destination
+          </Button>
+        )}
+        <h3 className="mt-5">Address:</h3>
         <div className="my-2 *:text-left [&>button:first-child]:min-w-[50%] [&>button:first-child]:max-w-full [&>button:first-child>span]:w-full [&>button:first-child>span]:flex-wrap [&>button:first-child>span]:justify-between flex items-baseline gap-2">
           <Dropdown
             label={
-              <span>
-                <b>Person Name</b>
-                <br />
-                Line 1<br />
-                Line 2<br />
-              </span>
+              addr === undefined ? (
+                <i>Select an Address</i>
+              ) : (
+                <span>
+                  <b>{addr.recipient}</b>
+                  <br />
+                  {addr.line1}
+                  <br />
+                  {addr.line2}
+                </span>
+              )
             }
-            dismissOnClick={false}
+            dismissOnClick={true}
             className=" "
             color="gray">
             <Dropdown.Header>
@@ -73,57 +128,146 @@ function EditableTimelineItem(props: {
                 Create an Address
               </a>
             </Dropdown.Header>
-            <Dropdown.Item>Dashboard</Dropdown.Item>
-            <Dropdown.Item>Settings</Dropdown.Item>
-            <Dropdown.Item>Earnings</Dropdown.Item>
-            <Dropdown.Item>Sign out</Dropdown.Item>
+            {props.timeline.addressList.map(address => (
+              <Dropdown.Item key={address.hashId} onClick={action(() => (props.sat.address = address.hashId))}>
+                <span className="w-full text-left">
+                  <b>{address.recipient}</b>
+                  <br />
+                  {address.line1}
+                  <br />
+                  {address.line2}
+                </span>
+              </Dropdown.Item>
+            ))}
           </Dropdown>
-          <Button color="gray">
+          <Button
+            color="gray"
+            onClick={() => {
+              props.timeline.refreshAddressList();
+            }}>
             <HiRefresh />
           </Button>
         </div>
-        <h3 className="mt-2">Expected Arrival Date & Time:</h3>
+        <h3 className="mt-5">Expected Arrival Date & Time:</h3>
         <div className="my-2 *:bg-white flex gap-2 [&_input]:bg-gray-50">
-          <Datepicker color="gray" />
+          <Datepicker
+            color="gray"
+            defaultDate={date}
+            onSelectedDateChanged={action(newDate => {
+              const currentDate = new Date(props.sat.expectedArrivalTimestamp * 1000);
+              currentDate.setFullYear(newDate.getFullYear());
+              currentDate.setMonth(newDate.getMonth());
+              currentDate.setDate(newDate.getDate());
+              props.sat.expectedArrivalTimestamp = Math.floor(currentDate.getTime() / 1000);
+            })}
+          />
           <input
             type="time"
+            value={date.toTimeString().slice(0, 5)}
+            onChange={action(e => {
+              date.setHours(parseInt(e.target.value.slice(0, 2)));
+              date.setMinutes(parseInt(e.target.value.slice(3, 5)));
+              props.sat.expectedArrivalTimestamp = Math.floor(date.getTime() / 1000);
+            })}
             className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
           />
         </div>
-        <h3 className="mt-2">Input:</h3>
+        <h3 className="mt-5">Input:</h3>
         <div className="my-2">
           <GoodAndQuantityDataGrid data={input} />
         </div>
-        <div className="my-2">
+        <div className="my-3">
           <GoodSelectModal
             ignored={input.map(val => val.uuid)}
-            onSelect={value => {
-              setInput([
-                ...input,
-                { ...value, quantity: 1, minQuantity: 1, maxQuantity: Number.MAX_SAFE_INTEGER, removable: true }
-              ]);
-            }}
+            onSelect={action(value => {
+              input.push({
+                ...value,
+                quantity: 1,
+                minQuantity: 1,
+                maxQuantity: Number.MAX_SAFE_INTEGER,
+                removable: true
+              });
+            })}
           />
         </div>
-        <h3 className="mt-2">Output:</h3>
+        <h3 className="mt-5">Output:</h3>
         <div className="my-2">
           <GoodAndQuantityDataGrid data={output} />
         </div>
-        <div className="my-2">
+        <div className="my-3">
           <GoodSelectModal
             ignored={output.map(val => val.uuid)}
-            onSelect={value => {
-              setOutput([
-                ...output,
-                { ...value, quantity: 1, minQuantity: 1, maxQuantity: Number.MAX_SAFE_INTEGER, removable: true }
-              ]);
-            }}
+            onSelect={action(value => {
+              output.push({
+                ...value,
+                quantity: 1,
+                minQuantity: 1,
+                maxQuantity: Number.MAX_SAFE_INTEGER,
+                removable: true
+              });
+            })}
           />
         </div>
+        {props.timeline.isLastStop(props.sat) === false && (
+          <>
+            <h3 className="mt-10">Courier:</h3>
+            <div className="my-2 *:text-left [&>button:first-child]:min-w-[50%] [&>button:first-child]:max-w-full [&>button:first-child>span]:w-full [&>button:first-child>span]:flex-wrap [&>button:first-child>span]:justify-between flex items-baseline gap-2">
+              <Dropdown
+                label={
+                  courier === undefined ? (
+                    <i>Select a Courier</i>
+                  ) : (
+                    <span>
+                      <b>{courier.name}</b>
+                      <br />
+                      {courier.company}
+                      <br />
+                      {courier.telephone}
+                    </span>
+                  )
+                }
+                dismissOnClick={true}
+                className=" "
+                color="gray">
+                <Dropdown.Header>
+                  <a href="./couriers" target="_blank">
+                    Create a Courier
+                  </a>
+                </Dropdown.Header>
+                {props.timeline.courierList.map(courier => (
+                  <Dropdown.Item key={courier.hashId} onClick={action(() => (props.sat.courier = courier.hashId))}>
+                    <span className="w-full text-left">
+                      <b>{courier.name}</b>
+                      <br />
+                      {courier.company}
+                      <br />
+                      {courier.telephone}
+                    </span>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown>
+              <Button
+                color="gray"
+                onClick={() => {
+                  props.timeline.refreshCourierList();
+                }}>
+                <HiRefresh />
+              </Button>
+            </div>
+            <h3 className="mt-5">Transport Info:</h3>
+            <div className="my-2">
+              <TextInput
+                placeholder="Transport Info"
+                value={props.sat.transportInfo}
+                onChange={action(e => (props.sat.transportInfo = e.target.value))}
+              />
+            </div>
+          </>
+        )}
       </Timeline.Content>
     </Timeline.Item>
   );
-}
+});
 
 interface GoodAndQuantity extends Good {
   quantity: number;
@@ -132,13 +276,17 @@ interface GoodAndQuantity extends Good {
   removable: boolean;
 }
 
-function GoodAndQuantityDataGrid(props: { data: GoodAndQuantity[] }) {
+const GoodAndQuantityDataGrid = observer((props: { data: GoodAndQuantity[] }) => {
   const theme = useTheme([
     getTheme(),
     {
-      Table: `--data-table-library_grid-template-columns: 80px minmax(0, 1fr) 160px 60px;`
+      Table: `--data-table-library_grid-template-columns: 80px minmax(0, 1fr) 90px 60px;`
     }
   ]);
+
+  const get = (uuid: string) => props.data.find(val => val.uuid === uuid);
+
+  const indexOf = (uuid: string) => props.data.findIndex(val => val.uuid === uuid);
 
   const columns = [
     {
@@ -153,27 +301,28 @@ function GoodAndQuantityDataGrid(props: { data: GoodAndQuantity[] }) {
     },
     {
       label: "",
+      resize: true,
       renderCell: item => (
-        <span className="flex gap-2">
+        <span className="flex gap-2 justify-center">
           <button
             className="fill-gray-200 hover:fill-black"
             disabled={item.quantity <= item.minQuantity}
-            onClick={async () => {
+            onClick={action(() => {
               if (item.quantity > item.minQuantity) {
-                item.quantity--; // TODO
+                get(item.uuid)!.quantity--;
               }
-            }}>
+            })}>
             <HiOutlineMinus />
           </button>
           <span>{item.quantity}</span>
           <button
             className="fill-gray-200 hover:fill-black"
             disabled={item.quantity >= item.maxQuantity}
-            onClick={async () => {
+            onClick={action(() => {
               if (item.quantity < item.maxQuantity) {
-                item.quantity++; // TODO
+                get(item.uuid)!.quantity++;
               }
-            }}>
+            })}>
             <HiOutlinePlus />
           </button>
         </span>
@@ -182,18 +331,28 @@ function GoodAndQuantityDataGrid(props: { data: GoodAndQuantity[] }) {
     {
       label: "",
       resize: true,
-      renderCell: item => (
-        <button>
-          <HiTrash onClick={async () => {}} />
-        </button>
-      )
+      renderCell: item =>
+        item.removable && (
+          <span className="flex justify-center">
+            <button
+              onClick={action(() => {
+                if (item.removable) {
+                  props.data.splice(indexOf(item.uuid), 1);
+                }
+              })}>
+              <svg className="w-6 h-6" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path>
+              </svg>
+            </button>
+          </span>
+        )
     }
   ] as Column<WithId<GoodAndQuantity>>[];
 
   const data = { nodes: props.data.map(val => withId(val, "uuid")) } as Data<WithId<GoodAndQuantity>>;
 
   return <CompactTable columns={columns} data={data} theme={theme} layout={{ custom: true }} />;
-}
+});
 
 function GoodSelectModal(props: { ignored: string[]; onSelect: (value: Good) => void }) {
   const [openModal, setOpenModal] = React.useState(false);
@@ -275,35 +434,31 @@ function GoodSelectModal(props: { ignored: string[]; onSelect: (value: Good) => 
   );
 }
 
-export function RoutePage() {
+export const RoutePage = observer(() => {
+  const timeline = useMobxStorage(() => new EditableTimeline(), []);
+
+  React.useEffect(() => {
+    timeline.refreshAddressList();
+    timeline.refreshCourierList();
+  }, []);
+
   return (
     <div className="w-full">
       <h2 className="mb-12 text-3xl font-semibold">Create a Route Proposal</h2>
 
       <Timeline>
-        <EditableTimelineItem />
-        <Timeline.Item>
-          <Timeline.Point icon={HiTrash} />
-          <Timeline.Content>
-            <Timeline.Time>March 2022</Timeline.Time>
-            <Timeline.Title>Marketing UI design in Figma</Timeline.Title>
-            <Timeline.Body>
-              All of the pages and components are first designed in Figma and we keep a parity between the two versions
-              even as we update the project.
-            </Timeline.Body>
-          </Timeline.Content>
-        </Timeline.Item>
-        <Timeline.Item>
-          <Timeline.Point icon={HiTrash} />
-          <Timeline.Content>
-            <Timeline.Time>April 2022</Timeline.Time>
-            <Timeline.Title>E-Commerce UI code in Tailwind CSS</Timeline.Title>
-            <Timeline.Body>
-              Get started with dozens of web components and interactive elements built on top of Tailwind CSS.
-            </Timeline.Body>
-          </Timeline.Content>
-        </Timeline.Item>
+        {timeline.stopAndTransportList.map((sat, idx) => (
+          <EditableTimelineItem key={idx} sat={sat} timeline={timeline} />
+        ))}
       </Timeline>
+      <div className="my-3">
+        <Button
+          onClick={() => {
+            timeline.addDestination();
+          }}>
+          Add Destination
+        </Button>
+      </div>
     </div>
   );
-}
+});

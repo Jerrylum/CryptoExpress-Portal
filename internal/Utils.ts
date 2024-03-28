@@ -1,3 +1,4 @@
+import React from "react";
 
 export function randomUUID() {
   let rtn = "";
@@ -15,4 +16,18 @@ export function withId<T>(item: T, idKey: keyof T) {
     ...item,
     id: item[idKey] as string,
   };
+}
+
+export function useMobxStorage<T extends { destructor: () => void } | {}>(
+  factory: () => T,
+  deps: React.DependencyList = []
+): T {
+  const storage = React.useMemo(() => factory(), deps); // eslint-disable-line react-hooks/exhaustive-deps
+  React.useEffect(() => {
+    return () => {
+      if ("destructor" in storage && typeof storage.destructor === "function") storage.destructor?.();
+    };
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return storage;
 }
