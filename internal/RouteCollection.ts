@@ -12,7 +12,7 @@ export async function list(): Promise<RouteProposal[]> {
 export async function createRouteProposal(route: Route): Promise<RouteProposal> {
   // await smart contract call createRouteProposal
   // TODO
-  return new RouteProposal();
+  return {} as RouteProposal;
 }
 
 // remove a non-submitted proposal
@@ -25,7 +25,7 @@ export async function removeRouteProposal(routeUID: string): Promise<void> {
 export async function submitRouteProposal(routeUID: string): Promise<Route> {
   // await smart contract call submitRouteProposal
   // TODO
-  return new Route();
+  return {} as Route;
 }
 
 // if the user is included in the route, for rp only
@@ -37,7 +37,7 @@ export async function signRouteProposal(
 ): Promise<RouteProposal> {
   // await smart contract call signRouteProposal
   // TODO
-  return new RouteProposal();
+  return {} as RouteProposal;
 }
 
 // if the user is included in the route, and does not have the commit process yet, for rt only

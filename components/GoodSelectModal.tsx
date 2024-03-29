@@ -1,3 +1,5 @@
+"use client";
+
 import { Good } from "@/chaincode/Models";
 import { WithId, withId } from "@/internal/Utils";
 import * as InternalGoodCollection from "@/internal/InternalGoodCollection";

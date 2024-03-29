@@ -66,7 +66,8 @@ export function exportAddressWithPrivateKey(obj: AddressWithPrivateKey): string 
 }
 
 export function fromAddressWithPrivateKeyToAddressObject(obj: AddressWithPrivateKey): Address {
-  return omitProperty(obj, "privateKey");
+  const { hashId, line1, line2, recipient, publicKey } = obj;
+  return { hashId, line1, line2, recipient, publicKey };
 }
 
 export interface CourierWithPrivateKey extends HashIdObject, PublicKeyObject, PrivateKeyObject {
@@ -113,7 +114,8 @@ export function exportCourierWithPrivateKey(obj: CourierWithPrivateKey): string 
 }
 
 export function fromCourierWithPrivateKeyToCourierObject(obj: CourierWithPrivateKey): Courier {
-  return omitProperty(obj, "privateKey");
+  const { hashId, name, company, telephone, publicKey } = obj;
+  return { hashId, name, company, telephone, publicKey };
 }
 
 export class UnixDate {

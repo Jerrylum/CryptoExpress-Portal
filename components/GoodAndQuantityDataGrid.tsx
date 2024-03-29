@@ -1,3 +1,5 @@
+"use client";
+
 import { WithId, withId } from "@/internal/Utils";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";

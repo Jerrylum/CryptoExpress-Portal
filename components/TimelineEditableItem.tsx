@@ -1,69 +1,15 @@
+"use client";
+
 import { UnixDate } from "@/internal/Models";
 import { Timeline, Button, Dropdown, Datepicker, Textarea } from "flowbite-react";
-import { runInAction, action, makeAutoObservable } from "mobx";
+import { runInAction, action } from "mobx";
 import { observer } from "mobx-react";
 import { GoodAndQuantityDataGrid } from "./GoodAndQuantityDataGrid";
-import { StopAndTransport } from "./RouteProposalCreatePage";
-import { HiTrash, HiRefresh, HiOutlinePlus, HiOutlineMinus, HiArrowNarrowDown } from "react-icons/hi";
+import { HiRefresh, HiArrowNarrowDown } from "react-icons/hi";
 import React from "react";
-import * as AddressCollection from "@/internal/AddressCollection";
-import * as CourierCollection from "@/internal/CourierCollection";
-import { Address, Courier } from "@/chaincode/Models";
 import { GoodSelectModal } from "./GoodSelectModal";
+import { EditableTimeline, StopAndTransport } from "@/internal/EditableTimeline";
 
-// observable
-export class EditableTimeline {
-  addressList: Address[] = [];
-
-  async refreshAddressList() {
-    return AddressCollection.list().then(list => {
-      runInAction(() => {
-        this.addressList = list;
-      });
-    });
-  }
-
-  courierList: Courier[] = [];
-
-  async refreshCourierList() {
-    return CourierCollection.list().then(list => {
-      runInAction(() => {
-        this.courierList = list;
-      });
-    });
-  }
-
-  stopAndTransportList: StopAndTransport[] = [];
-
-  isLastStop(sat: StopAndTransport): boolean {
-    return this.stopAndTransportList[this.stopAndTransportList.length - 1] === sat;
-  }
-
-  addDestination() {
-    this.stopAndTransportList.push({
-      address: null,
-      expectedArrivalTimestamp: Math.floor(Date.now() / 1000),
-      input: [],
-      output: [],
-      courier: null,
-      transportInfo: ""
-    });
-  }
-
-  removeDestination(sat: StopAndTransport) {
-    const idx = this.stopAndTransportList.indexOf(sat);
-    if (idx !== -1) {
-      this.stopAndTransportList.splice(idx, 1);
-    }
-  }
-
-  constructor() {
-    this.addDestination();
-    this.addDestination();
-
-    makeAutoObservable(this, undefined, { deep: true });
-  }
-}
 
 export const TimelineEditableItem = observer((props: { sat: StopAndTransport; timeline: EditableTimeline }) => {
   const input = props.sat.input;
@@ -104,7 +50,7 @@ export const TimelineEditableItem = observer((props: { sat: StopAndTransport; ti
           <Button
             color="gray"
             onClick={() => {
-              props.timeline.removeDestination(props.sat);
+              props.timeline.removeStop(props.sat);
             }}>
             Remove Destination
           </Button>
