@@ -457,7 +457,7 @@ function GoodSelectModal(props: { ignored: string[]; onSelect: (value: Good) => 
   );
 }
 
-export const RoutePage = observer(() => {
+export const RouteProposalCreatePage = observer(() => {
   const timeline = useMobxStorage(() => new EditableTimeline(), []);
 
   React.useEffect(() => {

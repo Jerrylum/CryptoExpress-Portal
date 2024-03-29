@@ -1,5 +1,5 @@
-import { RoutePage } from "@/components/RoutePage";
+import { RouteProposalCreatePage } from "@/components/RouteProposalCreatePage";
 
 export default function RouteAppPage() {
-  return <RoutePage />;
+  return <RouteProposalCreatePage />;
 }
