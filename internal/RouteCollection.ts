@@ -1,10 +1,12 @@
 "use server";
 import { Commit, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
+import { contract } from '@/gateway/gateway';
+import { getAllData } from '@/gateway/transactions';
 
 // any user can do, for rp and rt
 export async function list(): Promise<RouteProposal[]> {
   // await smart contract call getAllData for rp and rt, combine and return
-  // TODO
+  
   return [];
 }
 

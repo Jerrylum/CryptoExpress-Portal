@@ -3,13 +3,15 @@
 import { Address } from "@/chaincode/Models";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import { AddressWithPrivateKey } from "./Models";
+import { releaseAddress, removeAddress } from "@/gateway/transactions";
+import { getContract } from "@/gateway/gateway";
 
 export async function add(arg0: Address) {
-  // TODO
+  await releaseAddress(await getContract(), arg0);
 }
 
 export async function remove(arg0: string) {
-  // TODO
+  await removeAddress(await getContract(), arg0);
 }
 
 export type AddressQueryingResult = (Address | AddressWithPrivateKey) & { isPublic: boolean };
