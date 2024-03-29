@@ -11,6 +11,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@grpc/grpc-js": "^1.9.7",
+    "@hyperledger/fabric-gateway": "~1.4.0",
     "@table-library/react-table-library": "^4.1.7",
     "classnames": "^2.5.1",
     "flowbite": "^2.3.0",
