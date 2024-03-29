@@ -19,7 +19,7 @@ export async function list() {
   const publicHashIdList = publicList.map(addr => addr.hashId);
   const internalList = await InternalCourierCollection.list();
   return [
-    ...publicList.map(addr => ({ ...addr, isPublic: true })),
+    ...publicList.map(addr => ({ ...addr, isPublic: true })).filter(addr => internalList.find(a => a.hashId === addr.hashId) === undefined),
     ...internalList.map(addr => ({ ...addr, isPublic: publicHashIdList.includes(addr.hashId) }))
   ];
 }

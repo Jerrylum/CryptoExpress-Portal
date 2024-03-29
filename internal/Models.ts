@@ -65,7 +65,7 @@ export function exportAddressWithPrivateKey(obj: AddressWithPrivateKey): string 
   return JSON.stringify({ hashId, line1, line2, recipient, publicKey, privateKey });
 }
 
-export function fromAddressWithPrivateKeyToAddressObject(obj: AddressWithPrivateKey): Address {
+export function fromAnyToAddressObject(obj: Address): Address {
   const { hashId, line1, line2, recipient, publicKey } = obj;
   return { hashId, line1, line2, recipient, publicKey };
 }
@@ -113,7 +113,7 @@ export function exportCourierWithPrivateKey(obj: CourierWithPrivateKey): string 
   return JSON.stringify({ hashId, name, company, telephone, publicKey, privateKey });
 }
 
-export function fromCourierWithPrivateKeyToCourierObject(obj: CourierWithPrivateKey): Courier {
+export function fromAnyToCourierObject(obj: Courier): Courier {
   const { hashId, name, company, telephone, publicKey } = obj;
   return { hashId, name, company, telephone, publicKey };
 }
