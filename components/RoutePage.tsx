@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Datepicker, Dropdown, Modal, TextInput, Timeline } from "flowbite-react";
+import { Button, Datepicker, Dropdown, Modal, TextInput, Textarea, Timeline } from "flowbite-react";
 import React from "react";
 import * as AddressCollection from "@/internal/AddressCollection";
 import * as CourierCollection from "@/internal/CourierCollection";
@@ -17,6 +17,7 @@ import { useSemaphore } from "./SemaphoreHook";
 import { WithId, useMobxStorage, withId } from "@/internal/Utils";
 import { observer } from "mobx-react";
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { UnixDate } from "@/internal/Models";
 
 // observable
 export interface StopAndTransport {
@@ -86,10 +87,32 @@ const EditableTimelineItem = observer((props: { sat: StopAndTransport; timeline:
   const input = props.sat.input;
   const output = props.sat.output;
 
-  const date = new Date(props.sat.expectedArrivalTimestamp * 1000);
+  const unixDate = new UnixDate(props.sat.expectedArrivalTimestamp);
 
   const addr = props.timeline.addressList.find(address => address.hashId === props.sat.address);
   const courier = props.timeline.courierList.find(courier => courier.hashId === props.sat.courier);
+
+  const stopIndex = props.timeline.stopAndTransportList.indexOf(props.sat);
+  const previousStop = props.timeline.stopAndTransportList[stopIndex - 1] as StopAndTransport | undefined;
+  const previousStopDate = new UnixDate(previousStop?.expectedArrivalTimestamp ?? 0);
+  const minDate = previousStopDate;
+  const minTime = unixDate.isSameDay(previousStopDate) ? previousStopDate.toTimeString() : undefined;
+
+  React.useEffect(() => {
+    if (minDate !== undefined && minDate.toDate() > unixDate.toDate()) {
+      runInAction(() => {
+        props.sat.expectedArrivalTimestamp = minDate.unixTimestamp;
+      });
+    }
+  }, [minDate?.toDateString()]);
+
+  React.useEffect(() => {
+    if (minTime !== undefined && minDate !== undefined && minTime > unixDate.toTimeString()) {
+      runInAction(() => {
+        props.sat.expectedArrivalTimestamp = minDate.unixTimestamp;
+      });
+    }
+  }, [minTime]);
 
   return (
     <Timeline.Item>
@@ -152,22 +175,22 @@ const EditableTimelineItem = observer((props: { sat: StopAndTransport; timeline:
         <div className="my-2 *:bg-white flex gap-2 [&_input]:bg-gray-50">
           <Datepicker
             color="gray"
-            defaultDate={date}
+            minDate={minDate?.toDate()}
+            value={unixDate.toDateString()}
             onSelectedDateChanged={action(newDate => {
-              const currentDate = new Date(props.sat.expectedArrivalTimestamp * 1000);
-              currentDate.setFullYear(newDate.getFullYear());
-              currentDate.setMonth(newDate.getMonth());
-              currentDate.setDate(newDate.getDate());
-              props.sat.expectedArrivalTimestamp = Math.floor(currentDate.getTime() / 1000);
+              const unixDate = new UnixDate(props.sat.expectedArrivalTimestamp);
+              props.sat.expectedArrivalTimestamp = unixDate.setDate(newDate).unixTimestamp;
             })}
           />
           <input
             type="time"
-            value={date.toTimeString().slice(0, 5)}
+            min={minTime}
+            value={unixDate.toTimeString()}
             onChange={action(e => {
-              date.setHours(parseInt(e.target.value.slice(0, 2)));
-              date.setMinutes(parseInt(e.target.value.slice(3, 5)));
-              props.sat.expectedArrivalTimestamp = Math.floor(date.getTime() / 1000);
+              const unixDate = new UnixDate(props.sat.expectedArrivalTimestamp);
+              props.sat.expectedArrivalTimestamp = unixDate.setTime(
+                e.target.value as `${number}:${number}`
+              ).unixTimestamp;
             })}
             className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
           />
@@ -256,8 +279,8 @@ const EditableTimelineItem = observer((props: { sat: StopAndTransport; timeline:
             </div>
             <h3 className="mt-5">Transport Info:</h3>
             <div className="my-2">
-              <TextInput
-                placeholder="Transport Info"
+              <Textarea
+                placeholder="Extra Information for Courier"
                 value={props.sat.transportInfo}
                 onChange={action(e => (props.sat.transportInfo = e.target.value))}
               />
@@ -453,10 +476,20 @@ export const RoutePage = observer(() => {
       </Timeline>
       <div className="my-3">
         <Button
+          color="gray"
           onClick={() => {
             timeline.addDestination();
           }}>
           Add Destination
+        </Button>
+      </div>
+      <div className="my-3">
+        <Button
+          color="gray"
+          onClick={() => {
+            // TODO
+          }}>
+          Create Proposal
         </Button>
       </div>
     </div>

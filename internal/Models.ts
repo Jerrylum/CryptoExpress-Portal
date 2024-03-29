@@ -108,3 +108,56 @@ export function exportCourierWithPrivateKey(obj: CourierWithPrivateKey): string 
 export function fromCourierWithPrivateKeyToCourierObject(obj: CourierWithPrivateKey): Courier {
   return omitProperty(obj, "privateKey");
 }
+
+export class UnixDate {
+  constructor(public unixTimestamp: number) {
+    const curr = this.toDate();
+
+    curr.setSeconds(0);
+
+    this.unixTimestamp = Math.floor(curr.getTime() / 1000);
+  }
+
+  setDate(date: Date): this {
+    const curr = this.toDate();
+    curr.setFullYear(date.getFullYear());
+    curr.setMonth(date.getMonth());
+    curr.setDate(date.getDate());
+    this.unixTimestamp = Math.floor(curr.getTime() / 1000);
+    return this;
+  }
+
+  setTime(timeStr: `${number}:${number}`): this {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+
+    const curr = this.toDate();
+    curr.setHours(hours);
+    curr.setMinutes(minutes);
+    this.unixTimestamp = Math.floor(curr.getTime() / 1000);
+    return this;
+  }
+
+  toDate() {
+    return new Date(this.unixTimestamp * 1000);
+  }
+
+  toDateString(): `${number}-${number}-${number}` {
+    const date = this.toDate();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }
+
+  toTimeString(): `${number}:${number}` {
+    const date = this.toDate();
+    return date.toTimeString().slice(0, 5) as `${number}:${number}`;
+  }
+
+  isSameDay(other: UnixDate) {
+    const date1 = this.toDate();
+    const date2 = other.toDate();
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+}
