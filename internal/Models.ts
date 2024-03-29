@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { HashIdObject, PublicKeyObject, KeyHexString, Address, Courier } from "../chaincode/Models";
+import { HashIdObject, PublicKeyObject, KeyHexString, Address, Courier, Good } from "../chaincode/Models";
 import {
   objectToSha256Hash,
   exportPublicKey,
@@ -10,6 +10,13 @@ import {
   signObject,
   verifyObject
 } from "../chaincode/Utils";
+
+export interface GoodAndQuantity extends Good {
+  quantity: number;
+  minQuantity: number;
+  maxQuantity: number;
+  removable: boolean;
+}
 
 export interface PrivateKeyObject {
   privateKey: KeyHexString;
