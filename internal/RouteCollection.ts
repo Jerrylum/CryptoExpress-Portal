@@ -1,5 +1,6 @@
 "use server";
-import { Commit, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
+import { Commit, KeyHexString, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
+import { signObject } from "@/chaincode/Utils";
 import { getContract } from "@/gateway/Gateway";
 import {
   getAllData,
@@ -9,41 +10,41 @@ import {
   signRouteProposal,
   commitProgress as commitProgressTx
 } from "@/gateway/Transactions";
+import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
+import * as InternalCourierCollection from "@/internal/InternalCourierCollection";
 
-export async function listRouteProposal(): Promise<RouteProposal[]> {
-  // await smart contract call getAllData for rp and rt, combine and return
+export async function listProposal(): Promise<RouteProposal[]> {
   return await getAllData(await getContract(), "rp");
 }
 
-export async function listSubmittedRoute(): Promise<Route[]> {
+export async function listRoute(): Promise<Route[]> {
   return await getAllData(await getContract(), "rt");
 }
 
 export async function createProposal(route: Route): Promise<RouteProposal> {
-  // await smart contract call createRouteProposal
   return await createRouteProposal(await getContract(), route);
 }
 
-// remove a non-submitted proposal
 export async function removeProposal(routeUID: string): Promise<void> {
-  // await smart contract call removeRouteProposal
   await removeRouteProposal(await getContract(), routeUID);
 }
 
-// submit a complete-signed proposal
 export async function submitProposal(routeUID: string): Promise<void> {
-  // await smart contract call submitRouteProposal
   return await submitRouteProposal(await getContract(), routeUID);
 }
 
-// sign a proposal
-export async function signProposal(
-  routeUuid: string,
-  entityHashId: string,
-  signature: SignatureHexString
-): Promise<void> {
-  // await smart contract call signRouteProposal
-  return await signRouteProposal(await getContract(), routeUuid, entityHashId, signature);
+export async function signProposalByAddress(route: Route, addressHashId: string) {
+  const privateKey = (await InternalAddressCollection.get(addressHashId))?.privateKey;
+  if (!privateKey) throw new Error("Address not found");
+  const signature = signObject(route, privateKey);
+  return await signRouteProposal(await getContract(), route.uuid, addressHashId, signature);
+}
+
+export async function signProposalByCourier(route: Route, courierId: string) {
+  const courier = await InternalCourierCollection.get(courierId);
+  if (!courier) throw new Error("Courier not found");
+  const signature = signObject(route, courier.privateKey);
+  return await signRouteProposal(await getContract(), route.uuid, courierId, signature);
 }
 
 export async function commitProgress(
@@ -52,6 +53,5 @@ export async function commitProgress(
   step: TransportStep,
   commit: Commit
 ): Promise<void> {
-  // await smart contract call commitProgress
   await commitProgressTx(await getContract(), routeUuid, segmentIndex, step, commit);
 }
