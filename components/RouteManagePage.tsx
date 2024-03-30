@@ -8,8 +8,10 @@ import { Button, Timeline } from "flowbite-react";
 import { RouteView } from "@/chaincode/RouteView";
 import { Semaphore, SemaphoreContext, useSemaphore } from "./SemaphoreHook";
 import { RouteStopAndTransport } from "./TimelineVerticalViewItem";
+import { RouteStopAndTransport as RouteStopAndTransportHorizontal } from "./TimelineHorizontalViewItem";
 import { useMobxStorage } from "@/internal/Utils";
 import { action, observable } from "mobx";
+import { useAsyncTransition } from "./AsyncHook";
 
 export interface RouteLike {
   route: Route;
@@ -27,11 +29,31 @@ export const RouteVerticalTimeline = observer((props: {}) => {
   const routeView = new RouteView(routeLike.route);
 
   return (
-    <Timeline>
-      {routeView.stops.map((sv, idx) => (
-        <RouteStopAndTransport key={idx} stop={sv} />
-      ))}
-    </Timeline>
+    <div className="pl-3 w-full">
+      <Timeline>
+        {routeView.stops.map((sv, idx) => (
+          <RouteStopAndTransport key={idx} stop={sv} />
+        ))}
+      </Timeline>
+    </div>
+  );
+});
+
+export const RouteHorizontalTimeline = observer((props: {}) => {
+  const routeLike = React.useContext(RouteLikeContext);
+
+  const routeView = new RouteView(routeLike.route);
+
+  return (
+    <div className="w-full mb-4 overflow-x-auto">
+      <div className="pl-3 pt-3 w-[max-content]">
+        <Timeline horizontal>
+          {routeView.stops.map((sv, idx) => (
+            <RouteStopAndTransportHorizontal key={idx} stop={sv} />
+          ))}
+        </Timeline>
+      </div>
+    </div>
   );
 });
 
@@ -77,11 +99,9 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
 
   return (
     <RouteLikeContext.Provider value={routeLike}>
-      <div className="w-full my-10">
+      <div className="w-full mb-10">
         <p className="my-2">Route ID: {routeLike.route.uuid}</p>
-        <div className="pl-3 w-full">
-          <RouteVerticalTimeline />
-        </div>
+        <RouteHorizontalTimeline />
         {routeLike.isProposal ? (
           <div className="w-full flex gap-2">
             <Button
@@ -98,7 +118,7 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
               Remove
             </Button>
           </div>
-        ) : (
+        ) : new RouteView(routeLike.route).moments.find(m => m.commit === null) ? (
           <div className="w-full flex gap-2">
             <Button
               onClick={() => {
@@ -107,6 +127,8 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
               Commit
             </Button>
           </div>
+        ) : (
+          <></>
         )}
       </div>
     </RouteLikeContext.Provider>
@@ -114,55 +136,43 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
 });
 
 export const RouteManagePage = observer(() => {
-  const [rawProposalData, setRawProposalData] = React.useState<RouteProposal[]>([]);
-  const [rawRouteData, setRawRouteData] = React.useState<Route[]>([]);
-  const [isPending, startTransition] = React.useTransition();
-
   const dataSemaphoreRouteProposal = useSemaphore();
   const dataSemaphoreRoute = useSemaphore();
 
-  React.useEffect(() => {
-    startTransition(() => {
-      RouteCollection.listProposal().then(list => {
-        setRawProposalData(rawData => [...list]);
-      });
-      RouteCollection.listRoute().then(list => {
-        setRawRouteData(rawData => [...list]);
-      });
-    });
-  }, [dataSemaphoreRouteProposal[0]]); // TODO
+  const [proposals, isPendingProposal] = useAsyncTransition(
+    () => RouteCollection.listProposal(),
+    [dataSemaphoreRouteProposal[0]]
+  );
 
-  React.useEffect(() => {
-    console.log("rawData", rawProposalData);
-  }, [rawProposalData]);
+  const [routes, isPendingRoute] = useAsyncTransition(() => RouteCollection.listRoute(), [dataSemaphoreRoute[0]]);
 
   return (
     <div className="w-full" id="main-content">
-      <h2 className="mb-12 text-3xl font-semibold">All Route Proposals</h2>
+      <h2 className="mt-12 mb-2 text-3xl font-semibold">All Route Proposals</h2>
       <SemaphoreContext.Provider value={dataSemaphoreRouteProposal}>
-        <div className="w-full">
-          {rawProposalData.length > 0 ? (
-            rawProposalData.map((RouteProposal, idx) => (
-              <RouteLikeSection
-                key={idx}
-                route={RouteProposal.route}
-                signatures={Object.keys(RouteProposal.signatures)}
-              />
-            ))
-          ) : (
-            <p>No route proposal found</p>
-          )}
-        </div>
+        <span className="[&>a]:inline">
+          <Button as="a" href="/routes/create" className="my-4">
+            Create
+          </Button>
+        </span>
+        {(isPendingProposal || !proposals) && <p>Loading...</p>}
+        {!isPendingProposal && proposals && proposals.length === 0 && <p>No route proposal found</p>}
+        {!isPendingProposal &&
+          proposals &&
+          proposals.length !== 0 &&
+          proposals.map((rp, idx) => (
+            <RouteLikeSection key={idx} route={rp.route} signatures={Object.keys(rp.signatures)} />
+          ))}
       </SemaphoreContext.Provider>
-      <h2 className="mb-12 text-3xl font-semibold">All Submitted Route</h2>
+
+      <h2 className="mt-12 mb-2 text-3xl font-semibold">All Submitted Route</h2>
       <SemaphoreContext.Provider value={dataSemaphoreRoute}>
-        <div className="w-full">
-          {rawRouteData.length > 0 ? (
-            rawRouteData.map((route, idx) => <RouteLikeSection key={idx} route={route} signatures={undefined} />)
-          ) : (
-            <p>No route found</p>
-          )}
-        </div>
+        {(isPendingRoute || !routes) && <p>Loading...</p>}
+        {!isPendingRoute && routes && routes.length === 0 && <p>No route found</p>}
+        {!isPendingRoute &&
+          routes &&
+          routes.length !== 0 &&
+          routes.map((rt, idx) => <RouteLikeSection key={idx} route={rt} signatures={undefined} />)}
       </SemaphoreContext.Provider>
     </div>
   );

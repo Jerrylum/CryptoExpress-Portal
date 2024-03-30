@@ -1,6 +1,6 @@
 "use client";
 
-import { WithId, withId } from "@/internal/Utils";
+import { WithId } from "@/internal/Utils";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
 import { CompactTable } from "@table-library/react-table-library/compact";
@@ -8,8 +8,7 @@ import { Column } from "@table-library/react-table-library/types/compact";
 import { Data } from "@table-library/react-table-library/types/table";
 import { observer } from "mobx-react";
 import { TableCopyableCell } from "./TableCopyableCell";
-import { GoodMoment, RouteMoment } from "@/chaincode/RouteView";
-import { Good } from "@/chaincode/Models";
+import { RouteMoment } from "@/chaincode/RouteView";
 
 export interface GoodScanningDataGridProps {
   scanned: Map<string, number>;

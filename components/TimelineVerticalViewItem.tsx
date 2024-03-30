@@ -76,13 +76,13 @@ export const RouteStopAndTransport = observer((props: { stop: StopView }) => {
             </div>
           )}
         </div>
-        <h3 className="mt-5">Input:</h3>
+        <h3 className="mt-5">Import:</h3>
         <div className="w-full mb-4 overflow-x-auto md:overflow-hidden">
           <div className="w-[768px] md:w-full">
             <GoodMomentDataGrid data={input} />
           </div>
         </div>
-        <h3 className="mt-5">Output:</h3>
+        <h3 className="mt-5">Export:</h3>
         <div className="w-full mb-4 overflow-x-auto md:overflow-hidden">
           <div className="w-[768px] md:w-full">
             <GoodMomentDataGrid data={output} />
