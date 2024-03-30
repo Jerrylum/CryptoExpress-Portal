@@ -10,17 +10,18 @@ import {
   commitProgress as commitProgressTx
 } from "@/gateway/Transactions";
 
-export async function list(): Promise<RouteProposal[]> {
+export async function listRouteProposal(): Promise<RouteProposal[]> {
   // await smart contract call getAllData for rp and rt, combine and return
-  return [
-    ...(await getAllData<RouteProposal>(await getContract(), "rp")),
-    ...(await getAllData<RouteProposal>(await getContract(), "rt"))
-  ];
+  return await getAllData(await getContract(), "rp");
 }
 
-export async function createProposal(route: Route): Promise<void> {
+export async function listSubmittedRoute(): Promise<Route[]> {
+  return await getAllData(await getContract(), "rt");
+}
+
+export async function createProposal(route: Route): Promise<RouteProposal> {
   // await smart contract call createRouteProposal
-  await createRouteProposal(await getContract(), route);
+  return await createRouteProposal(await getContract(), route);
 }
 
 // remove a non-submitted proposal
@@ -32,7 +33,7 @@ export async function removeProposal(routeUID: string): Promise<void> {
 // submit a complete-signed proposal
 export async function submitProposal(routeUID: string): Promise<void> {
   // await smart contract call submitRouteProposal
-  await submitRouteProposal(await getContract(), routeUID);
+  return await submitRouteProposal(await getContract(), routeUID);
 }
 
 // sign a proposal
@@ -42,7 +43,7 @@ export async function signProposal(
   signature: SignatureHexString
 ): Promise<void> {
   // await smart contract call signRouteProposal
-  await signRouteProposal(await getContract(), routeUuid, entityHashId, signature);
+  return await signRouteProposal(await getContract(), routeUuid, entityHashId, signature);
 }
 
 export async function commitProgress(

@@ -1,9 +1,3 @@
-/*
-* Copyright IBM Corp. All Rights Reserved.
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
-
 import * as grpc from '@grpc/grpc-js';
 import { connect, Contract, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
@@ -11,27 +5,27 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 
 
-const channelName = envOrDefault('CHANNEL_NAME', 'mychannel');
-const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
-const mspId = envOrDefault('MSP_ID', 'Org1MSP');
+const channelName = process.env.CHANNEL_NAME || "";
+const chaincodeName = process.env.CHAINCODE_NAME || "";
+const mspId = process.env.MSP_ID || "";
 
 // Path to crypto materials.
-const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com'));
+const cryptoPath = process.env.CRYPTO_PATH || "";
 
 // Path to user private key directory.
-const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'keystore'));
+const keyDirectoryPath = process.env.KEY_DIRECTORY_PATH || "";
 
 // Path to user certificate.
-const certPath = envOrDefault('CERT_PATH', path.resolve(cryptoPath, 'users', 'User1@org1.example.com', 'msp', 'signcerts', 'cert.pem'));
+const certPath = process.env.CERT_PATH || "";
 
 // Path to peer tls certificate.
-const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peers', 'peer0.org1.example.com', 'tls', 'ca.crt'));
+const tlsCertPath = process.env.TLS_CERT_PATH || "";
 
 // Gateway peer endpoint.
-const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
+const peerEndpoint = process.env.PEER_ENDPOINT || "";
 
 // Gateway peer SSL host name override.
-const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
+const peerHostAlias = process.env.PEER_HOST_ALIAS || "";
 
 
 let contract: Contract;
@@ -42,7 +36,6 @@ export async function getContract(): Promise<Contract> {
   }
   return contract;
 }
-
 
 export async function startGateway(): Promise<void> {
 
@@ -77,7 +70,6 @@ export async function startGateway(): Promise<void> {
   contract = network.getContract(chaincodeName);
 }
 
-
 async function newGrpcConnection(): Promise<grpc.Client> {
   const tlsRootCert = await fs.readFile(tlsCertPath);
   const tlsCredentials = grpc.credentials.createSsl(tlsRootCert);
@@ -99,9 +91,6 @@ async function newSigner(): Promise<Signer> {
   return signers.newPrivateKeySigner(privateKey);
 }
 
-/**
-* envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
-*/
 function envOrDefault(key: string, defaultValue: string): string {
   return process.env[key] || defaultValue;
 }
