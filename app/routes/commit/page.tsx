@@ -1,5 +1,5 @@
-import { CommitProgressPage } from "@/components/CommitProgressPage";
+import { RouteCommitProgressPage } from "@/components/RouteCommitProgressPage";
 
 export default function RouteAppPage() {
-  return <CommitProgressPage />;
+  return <RouteCommitProgressPage />;
 }

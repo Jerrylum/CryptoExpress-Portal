@@ -64,12 +64,13 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
       if (routeLike.isProposal) {
         RouteCollection.getProposal(routeLike.route.uuid).then(
           action(proposal => {
+            if (!proposal) return;
             routeLike.route = proposal.route;
             routeLike.signatures = Object.keys(proposal.signatures);
           })
         );
       } else {
-        RouteCollection.getRoute(routeLike.route.uuid).then(action(r => (routeLike.route = r)));
+        RouteCollection.getRoute(routeLike.route.uuid).then(action(r => r && (routeLike.route = r)));
       }
     }
   }, [routeLike.version]);
@@ -81,7 +82,7 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
         <div className="pl-3 w-full">
           <RouteVerticalTimeline />
         </div>
-        {routeLike.isProposal && (
+        {routeLike.isProposal ? (
           <div className="w-full flex gap-2">
             <Button
               disabled={!isSubmittable}
@@ -97,6 +98,15 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
               Remove
             </Button>
           </div>
+        ) : (
+          <div className="w-full flex gap-2">
+            <Button
+              onClick={() => {
+                window.location.href = "/routes/commit?uuid=" + routeLike.route.uuid;
+              }}>
+              Commit
+            </Button>
+          </div>
         )}
       </div>
     </RouteLikeContext.Provider>
@@ -108,7 +118,8 @@ export const RouteManagePage = observer(() => {
   const [rawRouteData, setRawRouteData] = React.useState<Route[]>([]);
   const [isPending, startTransition] = React.useTransition();
 
-  const dataSemaphore = useSemaphore();
+  const dataSemaphoreRouteProposal = useSemaphore();
+  const dataSemaphoreRoute = useSemaphore();
 
   React.useEffect(() => {
     startTransition(() => {
@@ -119,32 +130,40 @@ export const RouteManagePage = observer(() => {
         setRawRouteData(rawData => [...list]);
       });
     });
-  }, [dataSemaphore[0]]); // TODO
+  }, [dataSemaphoreRouteProposal[0]]); // TODO
 
   React.useEffect(() => {
     console.log("rawData", rawProposalData);
   }, [rawProposalData]);
 
   return (
-    <SemaphoreContext.Provider value={dataSemaphore}>
-      <div className="w-full" id="main-content">
-        <h2 className="mb-12 text-3xl font-semibold">All Route Proposals</h2>
+    <div className="w-full" id="main-content">
+      <h2 className="mb-12 text-3xl font-semibold">All Route Proposals</h2>
+      <SemaphoreContext.Provider value={dataSemaphoreRouteProposal}>
         <div className="w-full">
-          {rawProposalData.map((RouteProposal, idx) => (
-            <RouteLikeSection
-              key={idx}
-              route={RouteProposal.route}
-              signatures={Object.keys(RouteProposal.signatures)}
-            />
-          ))}
+          {rawProposalData.length > 0 ? (
+            rawProposalData.map((RouteProposal, idx) => (
+              <RouteLikeSection
+                key={idx}
+                route={RouteProposal.route}
+                signatures={Object.keys(RouteProposal.signatures)}
+              />
+            ))
+          ) : (
+            <p>No route proposal found</p>
+          )}
         </div>
-        <h2 className="mb-12 text-3xl font-semibold">All Submitted Route</h2>
+      </SemaphoreContext.Provider>
+      <h2 className="mb-12 text-3xl font-semibold">All Submitted Route</h2>
+      <SemaphoreContext.Provider value={dataSemaphoreRoute}>
         <div className="w-full">
-          {rawRouteData.map((route, idx) => (
-            <RouteLikeSection key={idx} route={route} signatures={undefined} />
-          ))}
+          {rawRouteData.length > 0 ? (
+            rawRouteData.map((route, idx) => <RouteLikeSection key={idx} route={route} signatures={undefined} />)
+          ) : (
+            <p>No route found</p>
+          )}
         </div>
-      </div>
-    </SemaphoreContext.Provider>
+      </SemaphoreContext.Provider>
+    </div>
   );
 });

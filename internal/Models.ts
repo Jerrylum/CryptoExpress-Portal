@@ -169,4 +169,8 @@ export class UnixDate {
       date1.getDate() === date2.getDate()
     );
   }
+
+  static now() {
+    return new UnixDate(Math.floor(Date.now() / 1000));
+  }
 }

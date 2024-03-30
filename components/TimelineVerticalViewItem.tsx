@@ -10,6 +10,8 @@ import { GoodMomentDataGrid } from "./GoodMomentDataGrid";
 import { RouteLikeContext } from "./RouteManagePage";
 import { observer } from "mobx-react";
 import { action } from "mobx";
+import { AddressCard } from "./AddressCard";
+import { CourierCard } from "./CouriserCard";
 
 const SignLabel = (props: { isSigned: boolean }) => {
   if (props.isSigned) return <span className="text-gray-400">Signed</span>;
@@ -61,13 +63,7 @@ export const RouteStopAndTransport = observer((props: { stop: StopView }) => {
         </Timeline.Time>
         <h3 className="">Address:</h3>
         <div className="flex gap-2">
-          <div className="bg-white border border-gray-200 rounded-lg shadow p-3 inline-block min-w-[50%]">
-            <b>{addr.recipient}</b>
-            <br />
-            {addr.line1}
-            <br />
-            {addr.line2}
-          </div>
+          <AddressCard address={addr} />
           {isProposal && (
             <div>
               <SignLabel isSigned={isAddressSigned} />
@@ -96,13 +92,7 @@ export const RouteStopAndTransport = observer((props: { stop: StopView }) => {
           <>
             <h3 className="mt-5">Courier:</h3>
             <div className="flex gap-2">
-              <div className="bg-white border border-gray-200 rounded-lg shadow p-3 inline-block min-w-[50%]">
-                <b>{courier.name}</b>
-                <br />
-                {courier.company}
-                <br />
-                {courier.telephone}
-              </div>
+              <CourierCard courier={courier} />
               {isProposal && (
                 <div>
                   <SignLabel isSigned={isCourierSigned} />

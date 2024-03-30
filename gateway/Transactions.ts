@@ -52,7 +52,7 @@ export async function getAllData<T extends ModelPrefix>(contract: Contract, pref
 /**
  * Evaluate a transaction to query specific data based on prefix and uuid.
  */
-export async function getData<T extends ModelPrefix>(contract: Contract, prefix: T, uuid: string): Promise<ModelTypeMap[T]> {
+export async function getData<T extends ModelPrefix>(contract: Contract, prefix: T, uuid: string): Promise<ModelTypeMap[T] | undefined> {
   return evaluateTransaction(contract, "getData", prefix, uuid);
 }
 
