@@ -8,7 +8,7 @@ import {
   submitRouteProposal,
   signRouteProposal,
   commitProgress as commitProgressTx
-} from "@/gateway/transactions";
+} from "@/gateway/Transactions";
 
 export async function list(): Promise<RouteProposal[]> {
   // await smart contract call getAllData for rp and rt, combine and return

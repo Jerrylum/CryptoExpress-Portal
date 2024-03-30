@@ -50,7 +50,7 @@ peer lifecycle chaincode querycommitted --channelID mychannel --name basic --caf
 
 # Changing the permission of the organizations folder
 echo "Changing the permission of the organizations folder..."
-sudo chmod 777 -R ./organizations
+chmod 777 -R ./organizations
 
 # Invoking chaincode to query all data
 echo "Invoking chaincode to query all data..."
