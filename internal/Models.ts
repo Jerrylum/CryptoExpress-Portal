@@ -150,14 +150,14 @@ export class UnixDate {
     return new Date(this.unixTimestamp * 1000);
   }
 
-  toDateString(): `${number}-${number}-${number}` {
+  toDateString(): string {
     const date = this.toDate();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return new Intl.DateTimeFormat("sv-SE", { dateStyle: "short", timeZone: "HongKong" }).format(date); // "2024-03-30"
   }
 
-  toTimeString(): `${number}:${number}` {
+  toTimeString(): string {
     const date = this.toDate();
-    return date.toTimeString().slice(0, 5) as `${number}:${number}`;
+    return date.toLocaleTimeString("sv-SE", { timeStyle: "short", timeZone: "HongKong" }); // "12:00"
   }
 
   isSameDay(other: UnixDate) {
