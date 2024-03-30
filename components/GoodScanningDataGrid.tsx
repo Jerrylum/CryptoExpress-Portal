@@ -11,7 +11,7 @@ import { TableCopyableCell } from "./TableCopyableCell";
 import { RouteMoment } from "@/chaincode/RouteView";
 
 export interface GoodScanningDataGridProps {
-  scanned: Map<string, number>;
+  scanned: { [key: string]: number };
   moment: RouteMoment;
 }
 
@@ -32,7 +32,7 @@ export const GoodScanningDataGrid = observer((props: GoodScanningDataGridProps) 
       uuid: good.uuid,
       name: good.name,
       barcode: good.barcode,
-      quantity: props.scanned.get(good.uuid) || 0,
+      quantity: props.scanned[good.uuid] || 0,
       expected: good.quantity
     };
   });
@@ -56,7 +56,12 @@ export const GoodScanningDataGrid = observer((props: GoodScanningDataGridProps) 
     {
       label: "Qty.",
       resize: true,
-      renderCell: item => <span>{item.quantity}/{item.expected}</span>
+      renderCell: item => (
+        <span>
+          {item.quantity}/{item.expected}
+          {/* item.quantity */}
+        </span>
+      )
     }
   ] as Column<WithId<GoodRow>>[];
 

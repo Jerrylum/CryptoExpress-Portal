@@ -14,11 +14,10 @@ import { action, observable } from "mobx";
 import { useAsyncTransition } from "./AsyncHook";
 
 export interface RouteLike {
-  route: Route;
+  routeView: RouteView;
   signatures: string[];
   isProposal: boolean;
   version: number;
-  // refresh: () => void;
 }
 
 export const RouteLikeContext = React.createContext<RouteLike>({} as RouteLike);
@@ -26,7 +25,7 @@ export const RouteLikeContext = React.createContext<RouteLike>({} as RouteLike);
 export const RouteVerticalTimeline = observer((props: {}) => {
   const routeLike = React.useContext(RouteLikeContext);
 
-  const routeView = new RouteView(routeLike.route);
+  const routeView = routeLike.routeView;
 
   return (
     <div className="pl-3 w-full">
@@ -42,10 +41,10 @@ export const RouteVerticalTimeline = observer((props: {}) => {
 export const RouteHorizontalTimeline = observer((props: {}) => {
   const routeLike = React.useContext(RouteLikeContext);
 
-  const routeView = new RouteView(routeLike.route);
+  const routeView = routeLike.routeView;
 
   return (
-    <div className="w-full mb-4 overflow-x-auto">
+    <div className="w-full overflow-x-auto">
       <div className="pl-3 pt-3 w-[max-content]">
         <Timeline horizontal>
           {routeView.stops.map((sv, idx) => (
@@ -58,11 +57,13 @@ export const RouteHorizontalTimeline = observer((props: {}) => {
 });
 
 export const RouteLikeSection = observer((props: { route: Route; signatures: string[] | undefined }) => {
+  const [isHorizontal, setIsHorizontal] = React.useState(true);
+
   const routeLike = useMobxStorage<RouteLike>(
     () =>
       observable(
         {
-          route: props.route,
+          routeView: new RouteView(props.route),
           signatures: props.signatures || [],
           isProposal: props.signatures !== undefined,
           version: 0
@@ -73,10 +74,14 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
     []
   );
 
-  const allInvokedEntities = [...Object.keys(routeLike.route.addresses), ...Object.keys(routeLike.route.couriers)];
+  const allInvokedEntities = [
+    ...Object.keys(routeLike.routeView.model.addresses),
+    ...Object.keys(routeLike.routeView.model.couriers)
+  ];
 
   const allSignedEntities = routeLike.signatures || [];
   const isSubmittable = allSignedEntities.length === allInvokedEntities.length;
+  const isCompleted = routeLike.routeView.moments.find(m => m.commit === null) === undefined;
 
   const dataSemaphore = React.useContext(SemaphoreContext);
 
@@ -84,15 +89,17 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
     if (routeLike.version !== 0) {
       // Skip first render
       if (routeLike.isProposal) {
-        RouteCollection.getProposal(routeLike.route.uuid).then(
+        RouteCollection.getProposal(routeLike.routeView.uuid).then(
           action(proposal => {
             if (!proposal) return;
-            routeLike.route = proposal.route;
+            routeLike.routeView = new RouteView(props.route);
             routeLike.signatures = Object.keys(proposal.signatures);
           })
         );
       } else {
-        RouteCollection.getRoute(routeLike.route.uuid).then(action(r => r && (routeLike.route = r)));
+        RouteCollection.getRoute(routeLike.routeView.uuid).then(
+          action(r => r && (routeLike.routeView = new RouteView(props.route)))
+        );
       }
     }
   }, [routeLike.version]);
@@ -100,56 +107,59 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
   return (
     <RouteLikeContext.Provider value={routeLike}>
       <div className="w-full mb-10">
-        <p className="my-2">Route ID: {routeLike.route.uuid}</p>
-        <RouteHorizontalTimeline />
-        {routeLike.isProposal ? (
+        <p className="my-2">Route ID: {routeLike.routeView.uuid}</p>
+        <p className="my-2 text-blue-600 cursor-pointer" onClick={() => setIsHorizontal(!isHorizontal)}>
+          {isHorizontal ? "<Expand>" : "<Collapse>"}
+        </p>
+        {isHorizontal ? <RouteHorizontalTimeline /> : <RouteVerticalTimeline />}
+        {routeLike.isProposal && (
           <div className="w-full flex gap-2">
             <Button
               disabled={!isSubmittable}
               onClick={() => {
-                RouteCollection.submitProposal(routeLike.route.uuid).then(() => dataSemaphore[1]());
+                RouteCollection.submitProposal(routeLike.routeView.uuid).then(() => dataSemaphore[1]());
               }}>
               Submit
             </Button>
             <Button
               onClick={() => {
-                RouteCollection.removeProposal(routeLike.route.uuid).then(() => dataSemaphore[1]());
+                RouteCollection.removeProposal(routeLike.routeView.uuid).then(() => dataSemaphore[1]());
               }}>
               Remove
             </Button>
           </div>
-        ) : new RouteView(routeLike.route).moments.find(m => m.commit === null) ? (
+        )}
+        {!routeLike.isProposal && !isCompleted && (
           <div className="w-full flex gap-2">
             <Button
               onClick={() => {
-                window.location.href = "/routes/commit?uuid=" + routeLike.route.uuid;
+                window.location.href = "/routes/commit?uuid=" + routeLike.routeView.uuid;
               }}>
               Commit
             </Button>
           </div>
-        ) : (
-          <></>
         )}
+        {!routeLike.isProposal && isCompleted && <p>This route is completed.</p>}
       </div>
     </RouteLikeContext.Provider>
   );
 });
 
 export const RouteManagePage = observer(() => {
-  const dataSemaphoreRouteProposal = useSemaphore();
+  const dataSemaphoreProposal = useSemaphore();
   const dataSemaphoreRoute = useSemaphore();
 
   const [proposals, isPendingProposal] = useAsyncTransition(
     () => RouteCollection.listProposal(),
-    [dataSemaphoreRouteProposal[0]]
+    [dataSemaphoreProposal[0]]
   );
 
-  const [routes, isPendingRoute] = useAsyncTransition(() => RouteCollection.listRoute(), [dataSemaphoreRoute[0]]);
+  const [routes, isPendingRoute] = useAsyncTransition(() => RouteCollection.listRoute(), [dataSemaphoreRoute[0], proposals?.length]);
 
   return (
     <div className="w-full" id="main-content">
       <h2 className="mt-12 mb-2 text-3xl font-semibold">All Route Proposals</h2>
-      <SemaphoreContext.Provider value={dataSemaphoreRouteProposal}>
+      <SemaphoreContext.Provider value={dataSemaphoreProposal}>
         <span className="[&>a]:inline">
           <Button as="a" href="/routes/create" className="my-4">
             Create

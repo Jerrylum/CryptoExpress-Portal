@@ -47,8 +47,8 @@ export function AddressAddForm(props: { semaphore: Semaphore }) {
           </Button>
           <span>
             &nbsp;or&nbsp;
-            <span onClick={() => setIsAddFormOpen(false)} className="hover:text-blue-600 cursor-pointer underline">
-              Import
+            <span onClick={() => setIsAddFormOpen(false)} className="text-blue-600 cursor-pointer">
+              {"<Import>"}
             </span>
           </span>
         </div>
@@ -64,8 +64,8 @@ export function AddressAddForm(props: { semaphore: Semaphore }) {
           </Button>
           <span>
             &nbsp;or&nbsp;
-            <span onClick={() => setIsAddFormOpen(true)} className="hover:text-blue-600 cursor-pointer underline">
-              Add
+            <span onClick={() => setIsAddFormOpen(true)} className="text-blue-600 cursor-pointer">
+              {"<Add>"}
             </span>
           </span>
         </div>
