@@ -52,7 +52,7 @@ export async function getAllData<T extends ModelPrefix>(contract: Contract, pref
 /**
  * Evaluate a transaction to query specific data based on prefix and uuid.
  */
-export async function getData<T extends ModelPrefix>(contract: Contract, prefix: string, uuid: string): Promise<ModelTypeMap[T]> {
+export async function getData<T extends ModelPrefix>(contract: Contract, prefix: T, uuid: string): Promise<ModelTypeMap[T]> {
   return evaluateTransaction(contract, "getData", prefix, uuid);
 }
 
@@ -107,7 +107,7 @@ export async function signRouteProposal(
   return submitTransaction(contract, "signRouteProposal", routeUuid, entityHashId, signature);
 }
 
-export async function submitRouteProposal(contract: Contract, routeUuid: string): Promise<void> {
+export async function submitRouteProposal(contract: Contract, routeUuid: string): Promise<Route> {
   return submitTransaction(contract, "submitRouteProposal", routeUuid);
 }
 

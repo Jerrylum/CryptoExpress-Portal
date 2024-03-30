@@ -8,7 +8,8 @@ import {
   removeRouteProposal,
   submitRouteProposal,
   signRouteProposal,
-  commitProgress as commitProgressTx
+  commitProgress as commitProgressTx,
+  getData
 } from "@/gateway/Transactions";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import * as InternalCourierCollection from "@/internal/InternalCourierCollection";
@@ -17,8 +18,16 @@ export async function listProposal(): Promise<RouteProposal[]> {
   return await getAllData(await getContract(), "rp");
 }
 
+export async function getProposal(routeUID: string): Promise<RouteProposal> {
+  return await getData(await getContract(), "rp", routeUID);
+}
+
 export async function listRoute(): Promise<Route[]> {
   return await getAllData(await getContract(), "rt");
+}
+
+export async function getRoute(routeUID: string): Promise<Route> {
+  return await getData(await getContract(), "rt", routeUID);
 }
 
 export async function createProposal(route: Route): Promise<RouteProposal> {
@@ -29,7 +38,7 @@ export async function removeProposal(routeUID: string): Promise<void> {
   await removeRouteProposal(await getContract(), routeUID);
 }
 
-export async function submitProposal(routeUID: string): Promise<void> {
+export async function submitProposal(routeUID: string): Promise<Route> {
   return await submitRouteProposal(await getContract(), routeUID);
 }
 
