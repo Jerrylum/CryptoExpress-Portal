@@ -10,8 +10,8 @@ export async function add(addr: Address) {
   await releaseAddress(await getContract(), fromAnyToAddressObject(addr));
 }
 
-export async function remove(arg0: string) {
-  await removeAddress(await getContract(), arg0);
+export async function remove(hashId: string) {
+  await removeAddress(await getContract(), hashId);
 }
 
 export type AddressQueryingResult = (Address | AddressWithPrivateKey) & { isPublic: boolean };
@@ -21,7 +21,9 @@ export async function list(): Promise<AddressQueryingResult[]> {
   const publicHashIdList = publicList.map(addr => addr.hashId);
   const internalList = await InternalAddressCollection.list();
   return [
-    ...publicList.map(addr => ({ ...addr, isPublic: true })).filter(addr => internalList.find(a => a.hashId === addr.hashId) === undefined),
+    ...publicList
+      .map(addr => ({ ...addr, isPublic: true }))
+      .filter(addr => internalList.find(a => a.hashId === addr.hashId) === undefined),
     ...internalList.map(addr => ({ ...addr, isPublic: publicHashIdList.includes(addr.hashId) }))
   ];
 }

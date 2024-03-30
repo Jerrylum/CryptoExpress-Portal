@@ -45,7 +45,7 @@ export const RouteProposalCreatePage = observer(() => {
               const route = JSON.parse(JSON.stringify(routeMobX));
               
               console.log(route);
-              RouteCollection.createRouteProposal(route);
+              RouteCollection.createProposal(route);
             } catch (e) {
               console.log(e);
               

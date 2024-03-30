@@ -2,14 +2,16 @@
 
 import { Courier } from "@/chaincode/Models";
 import * as InternalCourierCollection from "@/internal/InternalCourierCollection";
-import { CourierWithPrivateKey } from "./Models";
+import { CourierWithPrivateKey, fromAnyToCourierObject } from "./Models";
+import { releaseCourier, removeCourier } from "@/gateway/transactions";
+import { getContract } from "@/gateway/gateway";
 
-export async function add(arg0: Courier) {
-  // TODO
+export async function add(courier: Courier) {
+  await releaseCourier(await getContract(), fromAnyToCourierObject(courier));
 }
 
-export async function remove(arg0: string) {
-  // TODO
+export async function remove(hashId: string) {
+  await removeCourier(await getContract(), hashId);
 }
 
 export type CourierQueryingResult = (Courier | CourierWithPrivateKey) & { isPublic: boolean };
@@ -19,7 +21,9 @@ export async function list() {
   const publicHashIdList = publicList.map(addr => addr.hashId);
   const internalList = await InternalCourierCollection.list();
   return [
-    ...publicList.map(addr => ({ ...addr, isPublic: true })).filter(addr => internalList.find(a => a.hashId === addr.hashId) === undefined),
+    ...publicList
+      .map(addr => ({ ...addr, isPublic: true }))
+      .filter(addr => internalList.find(a => a.hashId === addr.hashId) === undefined),
     ...internalList.map(addr => ({ ...addr, isPublic: publicHashIdList.includes(addr.hashId) }))
   ];
 }

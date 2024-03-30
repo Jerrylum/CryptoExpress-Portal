@@ -1,48 +1,50 @@
 "use server";
 import { Commit, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
-import { contract } from '@/gateway/gateway';
-import { getAllData } from '@/gateway/transactions';
+import { getContract } from "@/gateway/gateway";
+import {
+  getAllData,
+  createRouteProposal,
+  removeRouteProposal,
+  submitRouteProposal,
+  signRouteProposal,
+  commitProgress as commitProgressTx
+} from "@/gateway/transactions";
 
-// any user can do, for rp and rt
 export async function list(): Promise<RouteProposal[]> {
   // await smart contract call getAllData for rp and rt, combine and return
-  
-  return [];
+  return [
+    ...(await getAllData<RouteProposal>(await getContract(), "rp")),
+    ...(await getAllData<RouteProposal>(await getContract(), "rt"))
+  ];
 }
 
-// any user can do, for rp only
-export async function createRouteProposal(route: Route): Promise<RouteProposal> {
+export async function createProposal(route: Route): Promise<void> {
   // await smart contract call createRouteProposal
-  // TODO
-  return {} as RouteProposal;
+  await createRouteProposal(await getContract(), route);
 }
 
 // remove a non-submitted proposal
-export async function removeRouteProposal(routeUID: string): Promise<void> {
+export async function removeProposal(routeUID: string): Promise<void> {
   // await smart contract call removeRouteProposal
-  // TODO
+  await removeRouteProposal(await getContract(), routeUID);
 }
 
 // submit a complete-signed proposal
-export async function submitRouteProposal(routeUID: string): Promise<Route> {
+export async function submitProposal(routeUID: string): Promise<void> {
   // await smart contract call submitRouteProposal
-  // TODO
-  return {} as Route;
+  await submitRouteProposal(await getContract(), routeUID);
 }
 
-// if the user is included in the route, for rp only
 // sign a proposal
-export async function signRouteProposal(
+export async function signProposal(
   routeUuid: string,
   entityHashId: string,
   signature: SignatureHexString
-): Promise<RouteProposal> {
+): Promise<void> {
   // await smart contract call signRouteProposal
-  // TODO
-  return {} as RouteProposal;
+  await signRouteProposal(await getContract(), routeUuid, entityHashId, signature);
 }
 
-// if the user is included in the route, and does not have the commit process yet, for rt only
 export async function commitProgress(
   routeUuid: string,
   segmentIndex: number,
@@ -50,5 +52,5 @@ export async function commitProgress(
   commit: Commit
 ): Promise<void> {
   // await smart contract call commitProgress
-  // TODO
+  await commitProgressTx(await getContract(), routeUuid, segmentIndex, step, commit);
 }
