@@ -1,5 +1,5 @@
 "use server";
-import { Commit, KeyHexString, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
+import { Commit, Route, RouteProposal, TransportStep } from "@/chaincode/Models";
 import { signObject } from "@/chaincode/Utils";
 import { getContract } from "@/gateway/Gateway";
 import {

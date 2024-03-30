@@ -1,4 +1,4 @@
-import { GoodAndQuantity } from "./Models";
+import { GoodAndQuantity, fromAnyToAddressObject, fromAnyToCourierObject } from "./Models";
 import * as AddressCollection from "@/internal/AddressCollection";
 import * as CourierCollection from "@/internal/CourierCollection";
 import { Address, Courier, Good, Segment, Stop, Transport } from "@/chaincode/Models";
@@ -81,13 +81,15 @@ export class EditableTimeline {
       if (address === null) {
         throw new Error(`Address is not selected for stop ${i}.`);
       }
-      addresses[address] = this.addressList.find(a => a.hashId === address)!;
+      addresses[address] = fromAnyToAddressObject(this.addressList.find(a => a.hashId === address)!);
 
       const courier = sat.courier;
       if (courier === null && !this.isLastStop(sat)) {
         throw new Error(`Courier is not selected for stop ${i}.`);
       }
-      couriers[courier!] = this.courierList.find(c => c.hashId === courier)!;
+      if (courier !== null) {
+        couriers[courier] = fromAnyToCourierObject(this.courierList.find(c => c.hashId === courier)!);
+      }
 
       if (i !== 0) {
         const prev = this.stopAndTransportList[i - 1];

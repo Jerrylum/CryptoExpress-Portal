@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Button, Label, Select, TextInput } from "flowbite-react";
 import { observer } from "mobx-react";
 import { Good, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
+import { GoodsTable } from "@/internal/GoodsTable"
+import { GoodMomentDataGrid } from "./GoodMomentDataGrid";
 
 // Assuming necessary imports for Commit, TransportStep, etc., are correctly in place
 
@@ -26,8 +28,8 @@ export const CommitProgressPage = observer(() => {
 
   const addGood = () => {
     const newGood = new Good();
-    newGood.uuid = "asd";
-    newGood.name = "asd";
+    newGood.uuid = "ExampleUUID";
+    newGood.name = "ExampleName";
     newGood.barcode = barcode;
     
     setGoods([...goods, newGood]);
@@ -78,22 +80,21 @@ export const CommitProgressPage = observer(() => {
           </Select>
         </div>
         {/* UI Components */}
-        {/* Input for barcode and button to add a good */}
+        {/* Input for adding a good and GoodsTable for displaying the list of goods */}
         <div className="mb-4">
           <Label htmlFor="barcode">Barcode</Label>
           <TextInput id="barcode" type="text" value={barcode} onChange={(e) => setBarcode(e.target.value)} />
           <Button onClick={addGood}>Add Good</Button>
         </div>
-        {/* Displaying the list of goods with buttons to adjust quantity */}
-        {goods.map((good) => (
-          <div key={good.uuid}>
-            <span>{good.name}</span>
-            <Button onClick={() => updateGoodQuantity(good.uuid, -1)}>-</Button>
-            <span>{quantities[good.uuid] || 0}</span>
-            <Button onClick={() => updateGoodQuantity(good.uuid, 1)}>+</Button>
+        
+        {/* Using GoodsTable to display goods and their quantities */}
+        <div className="w-full mb-4 overflow-x-auto md:overflow-hidden">
+          <div className="w-[768px] md:w-full">
+            <GoodMomentDataGrid data={input} />
           </div>
-        ))}
-        {/* Additional inputs for Commit Detail and Signature */}
+        </div>
+
+        {/* Additional UI components for Commit Detail and Signature */}
         <Button onClick={handleSubmit}>Submit Commit</Button>
       </div>
     </div>

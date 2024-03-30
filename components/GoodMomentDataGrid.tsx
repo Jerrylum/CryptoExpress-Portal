@@ -19,10 +19,6 @@ export const GoodMomentDataGrid = observer((props: { data: readonly GoodMoment[]
     }
   ]);
 
-  const get = (uuid: string) => props.data.find(val => val.uuid === uuid);
-
-  const indexOf = (uuid: string) => props.data.findIndex(val => val.uuid === uuid);
-
   const columns = [
     {
       label: "UUID",

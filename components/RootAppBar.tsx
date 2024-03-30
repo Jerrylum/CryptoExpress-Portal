@@ -15,7 +15,7 @@ function RootAppBar() {
         <Navbar.Link as={Link} href="/goods">
           Library
         </Navbar.Link>
-        <Navbar.Link as={Link} href="/routes">
+        <Navbar.Link as={Link} href="/routes/list">
           Routes
         </Navbar.Link>
         <Navbar.Link as={Link} href="/addresses">

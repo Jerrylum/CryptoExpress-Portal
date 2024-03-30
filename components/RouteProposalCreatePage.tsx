@@ -7,6 +7,7 @@ import { observer } from "mobx-react";
 import { TimelineEditableItem } from "./TimelineEditableItem";
 import { EditableTimeline } from "@/internal/EditableTimeline";
 import * as RouteCollection from "@/internal/RouteCollection";
+import { redirect } from "next/navigation";
 
 export const RouteProposalCreatePage = observer(() => {
   const timeline = useMobxStorage(() => new EditableTimeline(), []);
@@ -46,8 +47,10 @@ export const RouteProposalCreatePage = observer(() => {
               
               console.log(route);
               RouteCollection.createProposal(route);
+
+              redirect("/list");
             } catch (e) {
-              console.log(e);
+              console.error(e);
               
               alert(e);
             }
