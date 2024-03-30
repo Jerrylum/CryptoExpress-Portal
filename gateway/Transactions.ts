@@ -48,7 +48,7 @@ export async function getData<T>(contract: Contract, prefix: string, uuid: strin
  */
 export async function releaseAddress(contract: Contract, address: Address): Promise<void> {
   try {
-    // Assuming the logic to create an address object, like createHashIdObject, has already been applied before calling this function
+    // Assuming the logic to create an address object, like createHashId`Object, has already been applied before calling this function
     console.log(`\n--> Submit Transaction: releaseAddress, creating address with hashId ${address.hashId}`);
 
     // Submit the transaction, assuming the address has been correctly serialized to match the smart contract's expectations

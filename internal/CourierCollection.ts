@@ -3,8 +3,8 @@
 import { Courier } from "@/chaincode/Models";
 import * as InternalCourierCollection from "@/internal/InternalCourierCollection";
 import { CourierWithPrivateKey, fromAnyToCourierObject } from "./Models";
-import { releaseCourier, removeCourier } from "@/gateway/transactions";
-import { getContract } from "@/gateway/gateway";
+import { releaseCourier, removeCourier } from "@/gateway/Transactions";
+import { getContract } from "@/gateway/Gateway";
 
 export async function add(courier: Courier) {
   await releaseCourier(await getContract(), fromAnyToCourierObject(courier));

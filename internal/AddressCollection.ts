@@ -3,8 +3,8 @@
 import { Address } from "@/chaincode/Models";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import { AddressWithPrivateKey, fromAnyToAddressObject } from "./Models";
-import { getAllData, releaseAddress, removeAddress } from "@/gateway/transactions";
-import { getContract } from "@/gateway/gateway";
+import { getAllData, releaseAddress, removeAddress } from "@/gateway/Transactions";
+import { getContract } from "@/gateway/Gateway";
 
 export async function add(addr: Address) {
   await releaseAddress(await getContract(), fromAnyToAddressObject(addr));

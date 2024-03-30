@@ -1,6 +1,6 @@
 "use server";
 import { Commit, Route, RouteProposal, SignatureHexString, TransportStep } from "@/chaincode/Models";
-import { getContract } from "@/gateway/gateway";
+import { getContract } from "@/gateway/Gateway";
 import {
   getAllData,
   createRouteProposal,
