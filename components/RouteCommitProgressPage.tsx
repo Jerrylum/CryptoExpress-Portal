@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, TextInput } from "flowbite-react";
+import { Button, TextInput, Textarea } from "flowbite-react";
 import { Observer, observer } from "mobx-react";
 import { CommitDetail, Good } from "@/chaincode/Models";
 import { RouteMoment, RouteView } from "@/chaincode/RouteView";
@@ -70,7 +70,7 @@ const MomentInformation = observer((props: { moment: RouteMoment }) => {
   }
 });
 
-export const RouteCommitProgressForm = observer((props: { routeView: RouteView; currentMoment: RouteMoment }) => {
+const RouteCommitProgressForm = observer((props: { routeView: RouteView; currentMoment: RouteMoment }) => {
   const routeView = props.routeView;
   const firstUncommittedMoment = props.currentMoment;
 
@@ -98,25 +98,31 @@ export const RouteCommitProgressForm = observer((props: { routeView: RouteView; 
 
   const scanned = useMobxStorage(() => observable<{ [goodUuid: string]: number }>({}), []);
 
-  const barcodeInputRef = React.useRef<HTMLInputElement>(null);
+  const [barcodeInput, setBarcodeInput] = React.useState("");
+  const [info, setInfo] = React.useState("");
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onScan();
+    }
+  };
 
   const onScan = action(() => {
-    const barcode = barcodeInputRef.current?.value || "";
-    const good: Good | undefined = barcodeMap[barcode];
+    const good: Good | undefined = barcodeMap[barcodeInput];
 
     if (good === undefined) {
-      barcodeInputRef.current!.value = "";
+      setBarcodeInput("");
       return;
     }
 
     scanned[good.uuid] = (scanned[good.uuid] || 0) + 1;
-    barcodeInputRef.current!.value = "";
+    setBarcodeInput("");
   });
 
   const onCommit = async () => {
     const commitDetail = {
       delta: scanned,
-      info: "",
+      info: info,
       timestamp: UnixDate.now().unixTimestamp
     } satisfies CommitDetail;
     await RouteCollection.commitProgress(routeView.model, segmentIndex, step, commitDetail);
@@ -138,19 +144,31 @@ export const RouteCommitProgressForm = observer((props: { routeView: RouteView; 
           <div className="w-full my-5">
             <h3 className="my-2 text-2xl">Scanning</h3>
             <div className="w-full flex gap-2">
-              <TextInput ref={barcodeInputRef} type="text" className="min-w-[50%]" placeholder="Barcode" />
+              <TextInput
+                value={barcodeInput}
+                type="text"
+                className="min-w-[50%]"
+                placeholder="Barcode Input"
+                onChange={e => setBarcodeInput(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
               <Button color="gray" onClick={onScan}>
                 Enter
               </Button>
             </div>
           </div>
 
-          <div className="w-full my-5">
-            <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
+          <div className="w-full my-5 overflow-x-auto md:overflow-hidden">
+            <div className="w-[768px] md:w-full">
+              <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
+            </div>
           </div>
 
           <div className="w-full my-5">
-            {/* TODO info */}
+            <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
+          </div>
+
+          <div className="w-full my-5">
             <Button color="gray" onClick={onCommit}>
               Commit
             </Button>
