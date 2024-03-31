@@ -73,8 +73,11 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
   const routeView = props.routeView;
   const firstUncommittedMoment = props.currentMoment;
 
+  const segmentIndex = routeView.transports.indexOf(firstUncommittedMoment.transport);
+  const step = firstUncommittedMoment.event;
+
   const goods = routeView.model.goods;
-  const barcodeMap: { [key: string]: Good } = React.useMemo(() => {
+  const barcodeMap = React.useMemo(() => {
     const rtn: { [key: string]: Good } = {};
     Object.values(goods).forEach(good => {
       rtn[good.barcode] = good;
@@ -82,18 +85,6 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
 
     return rtn;
   }, []);
-
-  const segmentIndex = routeView.transports.indexOf(firstUncommittedMoment.transport);
-  const step = firstUncommittedMoment.event;
-
-  const canCommit =
-    useAsyncHook(() => {
-      if (step === "srcOutgoing" || step === "dstIncoming") {
-        return InternalAddressCollection.has(firstUncommittedMoment.entity.hashId);
-      } else {
-        return InternalCourierCollection.has(firstUncommittedMoment.entity.hashId);
-      }
-    }, []) || false;
 
   const scanned = useMobxStorage(() => observable<{ [goodUuid: string]: number }>({}), []);
 
@@ -129,7 +120,77 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
   };
 
   return (
-    <div className="w-full">
+    <>
+      <div className="w-full my-5">
+        <h3 className="my-2 text-2xl">Scanning</h3>
+        <div className="w-full flex gap-2">
+          <TextInput
+            value={barcodeInput}
+            type="text"
+            className="min-w-[50%]"
+            placeholder="Barcode Input"
+            onChange={e => setBarcodeInput(e.target.value)}
+            onKeyDown={onKeyDown}
+          />
+          <Button color="gray" onClick={onScan}>
+            Enter
+          </Button>
+        </div>
+      </div>
+
+      <div className="w-full my-5 overflow-x-auto md:overflow-hidden">
+        <div className="w-[768px] md:w-full">
+          <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
+        </div>
+      </div>
+
+      <div className="w-full my-5">
+        <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
+      </div>
+
+      <div className="w-full my-5">
+        <Button color="gray" onClick={onCommit}>
+          Commit
+        </Button>
+      </div>
+
+      <div className="absolute top-0 bottom-0 left-0 right-0 bg-red-500 z-10">
+        {/* <QRScanner
+          className="h-full max-h-[calc(100%-200px)]"
+          config={{
+            fps: 10,
+            qrbox: { width: 250, height: 100 },
+            disableFlip: false,
+            videoConstraints: {
+              height: 50
+            }
+          }}
+          verbose={false}
+          qrCodeSuccessCallback={onNewScanResult}
+          qrCodeErrorCallback={undefined}
+        /> */}
+      </div>
+    </>
+  );
+});
+
+const RouteCommitProgressPageBody = observer((props: { routeView: RouteView; currentMoment: RouteMoment }) => {
+  const routeView = props.routeView;
+  const firstUncommittedMoment = props.currentMoment;
+
+  const step = firstUncommittedMoment.event;
+
+  const canCommit =
+    useAsyncHook(() => {
+      if (step === "srcOutgoing" || step === "dstIncoming") {
+        return InternalAddressCollection.has(firstUncommittedMoment.entity.hashId);
+      } else {
+        return InternalCourierCollection.has(firstUncommittedMoment.entity.hashId);
+      }
+    }, []) || false;
+
+  return (
+    <div className="w-full relative">
       <h2 className="text-3xl font-semibold">Import/Export Commit</h2>
       <p className="my-2">Route ID: {routeView.uuid}</p>
 
@@ -138,42 +199,7 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
         <MomentInformation moment={firstUncommittedMoment} />
       </div>
 
-      {canCommit && (
-        <>
-          <div className="w-full my-5">
-            <h3 className="my-2 text-2xl">Scanning</h3>
-            <div className="w-full flex gap-2">
-              <TextInput
-                value={barcodeInput}
-                type="text"
-                className="min-w-[50%]"
-                placeholder="Barcode Input"
-                onChange={e => setBarcodeInput(e.target.value)}
-                onKeyDown={onKeyDown}
-              />
-              <Button color="gray" onClick={onScan}>
-                Enter
-              </Button>
-            </div>
-          </div>
-
-          <div className="w-full my-5 overflow-x-auto md:overflow-hidden">
-            <div className="w-[768px] md:w-full">
-              <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
-            </div>
-          </div>
-
-          <div className="w-full my-5">
-            <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
-          </div>
-
-          <div className="w-full my-5">
-            <Button color="gray" onClick={onCommit}>
-              Commit
-            </Button>
-          </div>
-        </>
-      )}
+      {canCommit && <RouteCommitProgressForm {...props} />}
     </div>
   );
 });
@@ -204,5 +230,5 @@ export const RouteCommitProgressPage = observer(() => {
     return <div>Route is already completed</div>;
   }
 
-  return <RouteCommitProgressForm routeView={routeView} currentMoment={firstUncommittedMoment} />;
+  return <RouteCommitProgressPageBody routeView={routeView} currentMoment={firstUncommittedMoment} />;
 });

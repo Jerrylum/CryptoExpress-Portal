@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 export function useAsyncHook<T>(factory: () => Promise<T>, deps?: React.DependencyList | undefined): T | null {

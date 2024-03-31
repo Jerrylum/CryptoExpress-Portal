@@ -1,3 +1,5 @@
+"use client";
+
 import { Address } from "@/chaincode/Models";
 import classNames from "classnames";
 

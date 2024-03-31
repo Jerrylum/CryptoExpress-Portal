@@ -2,7 +2,6 @@
 
 import { Navbar } from "flowbite-react";
 import Link from "next/link";
-import * as React from "react";
 
 function RootAppBar() {
   return (

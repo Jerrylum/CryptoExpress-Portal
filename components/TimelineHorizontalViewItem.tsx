@@ -1,3 +1,5 @@
+"use client";
+
 import { StopView } from "@/chaincode/RouteView";
 import { UnixDate } from "@/internal/Models";
 import { Timeline } from "flowbite-react";

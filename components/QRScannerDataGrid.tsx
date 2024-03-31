@@ -1,3 +1,5 @@
+"use client";
+
 import { Html5QrcodeResult } from "html5-qrcode";
 import React from "react";
 import { useTheme } from "@table-library/react-table-library/theme";

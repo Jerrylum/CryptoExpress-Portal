@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 export function TableEditableCell(props: { getter: () => string; setter: (value: string) => void }) {

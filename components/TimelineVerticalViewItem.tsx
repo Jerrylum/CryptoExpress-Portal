@@ -1,5 +1,7 @@
+"use client";
+
 import { Timeline } from "flowbite-react";
-import React from "react";
+import React, { useContext } from "react";
 import * as RouteCollection from "@/internal/RouteCollection";
 import * as InternalAddressCollection from "@/internal/InternalAddressCollection";
 import * as InternalCourierCollection from "@/internal/InternalCourierCollection";
@@ -19,7 +21,7 @@ const SignLabel = (props: { isSigned: boolean }) => {
 };
 
 export const RouteStopAndTransport = observer((props: { stop: StopView }) => {
-  const routeLike = React.useContext(RouteLikeContext);
+  const routeLike = useContext(RouteLikeContext);
 
   const stop = props.stop;
   const addr = stop.address;

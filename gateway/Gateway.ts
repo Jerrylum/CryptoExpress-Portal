@@ -68,6 +68,8 @@ export async function startGateway(): Promise<void> {
 
   // Get the smart contract from the network.
   contract = network.getContract(chaincodeName);
+
+  network.getChaincodeEvents
 }
 
 async function newGrpcConnection(): Promise<grpc.Client> {

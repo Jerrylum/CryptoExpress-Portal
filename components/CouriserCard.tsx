@@ -1,3 +1,5 @@
+"use client";
+
 import { Courier } from "@/chaincode/Models";
 import classNames from "classnames";
 
