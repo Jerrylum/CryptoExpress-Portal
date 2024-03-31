@@ -15,7 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={roboto.className}>
         <RootAppBar />
-        <main className="md:container md:mx-auto md:px-0 px-3 md:py-12 py-6 flex flex-col items-center justify-between">
+        <main className="md:container md:mx-auto md:px-0 px-3 sm:py-12 py-24 flex flex-col items-center justify-between">
           <div className="max-w-3xl w-full items-center justify-between font-mono text-sm md:flex">{children}</div>
         </main>
       </body>
