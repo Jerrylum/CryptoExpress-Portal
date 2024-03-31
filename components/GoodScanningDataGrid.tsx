@@ -9,11 +9,58 @@ import { Data } from "@table-library/react-table-library/types/table";
 import { observer } from "mobx-react";
 import { TableCopyableCell } from "./TableCopyableCell";
 import { RouteMoment } from "@/chaincode/RouteView";
+import React from "react";
+import { action } from "mobx";
 
 export interface GoodScanningDataGridProps {
   scanned: { [key: string]: number };
   moment: RouteMoment;
 }
+
+type GoodRow = { id: string; uuid: string; name: string; barcode: string; quantity: number; expected: number };
+
+const GoodQuantityCell = observer((props: { row: GoodRow; scanned: { [key: string]: number } }) => {
+  const item = props.row;
+  const scanned = props.scanned;
+
+  const num = scanned[item.uuid] || 0;
+
+  const [qtyInput, setQtyInput] = React.useState(num + "");
+
+  React.useEffect(() => {
+    setQtyInput(num + "");
+  }, [num]);
+
+  const onConfirm = action((e: React.SyntheticEvent<HTMLInputElement>) => {
+    let val = new Number(qtyInput).valueOf();
+    if (isNaN(val) || val < 0) val = num;
+    scanned[item.uuid] = val;
+    setQtyInput(scanned[item.uuid] + "");
+
+    e.currentTarget.blur();
+  });
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") onConfirm(e);
+  };
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    onConfirm(e);
+  };
+
+  return (
+    <span>
+      <input
+        value={qtyInput}
+        onChange={e => setQtyInput(e.target.value)}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        className="w-12 border-[1px] rounded text-right pr-1"
+      />
+      /{item.expected}
+    </span>
+  );
+});
 
 export const GoodScanningDataGrid = observer((props: GoodScanningDataGridProps) => {
   const expectedDelta = props.moment.expectedDelta;
@@ -25,7 +72,6 @@ export const GoodScanningDataGrid = observer((props: GoodScanningDataGridProps) 
     }
   ]);
 
-  type GoodRow = { id: string; uuid: string; name: string; barcode: string; quantity: number; expected: number };
   const rows = expectedDelta.map(good => {
     return {
       id: good.uuid,
@@ -56,16 +102,11 @@ export const GoodScanningDataGrid = observer((props: GoodScanningDataGridProps) 
     {
       label: "Qty.",
       resize: true,
-      renderCell: item => (
-        <span>
-          {item.quantity}/{item.expected}
-          {/* item.quantity */}
-        </span>
-      )
+      renderCell: item => <GoodQuantityCell row={item} scanned={props.scanned} />
     }
-  ] as Column<WithId<GoodRow>>[];
+  ] as Column<GoodRow>[];
 
-  const data = { nodes: rows } as Data<WithId<GoodRow>>;
+  const data = { nodes: rows } as Data<GoodRow>;
 
   return <CompactTable columns={columns} data={data} theme={theme} layout={{ custom: true }} />;
 });
