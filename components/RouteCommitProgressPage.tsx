@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button, TextInput, Textarea } from "flowbite-react";
-import { Observer, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import { CommitDetail, Good } from "@/chaincode/Models";
 import { RouteMoment, RouteView } from "@/chaincode/RouteView";
 import { useSearchParams } from "next/navigation";
@@ -16,7 +16,6 @@ import { useMobxStorage } from "@/internal/Utils";
 import { action, observable } from "mobx";
 import { GoodScanningDataGrid } from "./GoodScanningDataGrid";
 import { UnixDate } from "@/internal/Models";
-import { useSemaphore } from "./SemaphoreHook";
 
 // Assuming necessary imports for Commit, TransportStep, etc., are correctly in place
 

@@ -1,12 +1,12 @@
 "use client";
 
 import { observer } from "mobx-react";
-import React, { useMemo } from "react";
+import React from "react";
 import * as RouteCollection from "@/internal/RouteCollection";
-import { Route, RouteProposal } from "@/chaincode/Models";
+import { Route } from "@/chaincode/Models";
 import { Button, Timeline } from "flowbite-react";
 import { RouteView } from "@/chaincode/RouteView";
-import { Semaphore, SemaphoreContext, useSemaphore } from "./SemaphoreHook";
+import { SemaphoreContext, useSemaphore } from "./SemaphoreHook";
 import { RouteStopAndTransport } from "./TimelineVerticalViewItem";
 import { RouteStopAndTransport as RouteStopAndTransportHorizontal } from "./TimelineHorizontalViewItem";
 import { useMobxStorage } from "@/internal/Utils";
@@ -154,7 +154,10 @@ export const RouteManagePage = observer(() => {
     [dataSemaphoreProposal[0]]
   );
 
-  const [routes, isPendingRoute] = useAsyncTransition(() => RouteCollection.listRoute(), [dataSemaphoreRoute[0], proposals?.length]);
+  const [routes, isPendingRoute] = useAsyncTransition(
+    () => RouteCollection.listRoute(),
+    [dataSemaphoreRoute[0], proposals?.length]
+  );
 
   return (
     <div className="w-full" id="main-content">
