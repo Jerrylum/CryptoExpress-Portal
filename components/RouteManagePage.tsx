@@ -1,7 +1,7 @@
 "use client";
 
 import { observer } from "mobx-react";
-import React, { useContext } from "react";
+import React from "react";
 import * as RouteCollection from "@/internal/RouteCollection";
 import { Route } from "@/chaincode/Models";
 import { Button, Timeline } from "flowbite-react";
@@ -23,7 +23,7 @@ export interface RouteLike {
 export const RouteLikeContext = React.createContext<RouteLike>({} as RouteLike);
 
 export const RouteVerticalTimeline = observer((props: {}) => {
-  const routeLike = useContext(RouteLikeContext);
+  const routeLike = React.useContext(RouteLikeContext);
 
   const routeView = routeLike.routeView;
 
@@ -39,7 +39,7 @@ export const RouteVerticalTimeline = observer((props: {}) => {
 });
 
 export const RouteHorizontalTimeline = observer((props: {}) => {
-  const routeLike = useContext(RouteLikeContext);
+  const routeLike = React.useContext(RouteLikeContext);
 
   const routeView = routeLike.routeView;
 
@@ -83,7 +83,7 @@ export const RouteLikeSection = observer((props: { route: Route; signatures: str
   const isSubmittable = allSignedEntities.length === allInvokedEntities.length;
   const isCompleted = routeLike.routeView.moments.find(m => m.commit === null) === undefined;
 
-  const dataSemaphore = useContext(SemaphoreContext);
+  const dataSemaphore = React.useContext(SemaphoreContext);
 
   React.useEffect(() => {
     if (routeLike.version !== 0) {
