@@ -16,6 +16,8 @@ import { useMobxStorage } from "@/internal/Utils";
 import { action, observable } from "mobx";
 import { GoodScanningDataGrid } from "./GoodScanningDataGrid";
 import { UnixDate } from "@/internal/Models";
+import { QRScanner } from "./QRScanner";
+import { Html5QrcodeResult } from "html5-qrcode";
 
 // Assuming necessary imports for Commit, TransportStep, etc., are correctly in place
 
@@ -154,21 +156,36 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
         </Button>
       </div>
 
-      <div className="absolute top-0 bottom-0 left-0 right-0 bg-red-500 z-10">
-        {/* <QRScanner
-          className="h-full max-h-[calc(100%-200px)]"
+      <div className="fixed top-0 bottom-0 left-0 right-0 bg-white z-10">
+        <QRScanner
+          className="h-full max-h-[calc(100%-108px)]"
           config={{
             fps: 10,
-            qrbox: { width: 250, height: 100 },
-            disableFlip: false,
-            videoConstraints: {
-              height: 50
-            }
+            qrbox: { width: 130, height: 50 },
+            disableFlip: false
           }}
           verbose={false}
-          qrCodeSuccessCallback={onNewScanResult}
+          qrCodeSuccessCallback={(decodedText: string, result: Html5QrcodeResult) => {
+            setBarcodeInput(decodedText);
+          }}
           qrCodeErrorCallback={undefined}
-        /> */}
+        />
+        <div className="fixed bottom-2 left-2 right-2 h-[100px] bg-white">
+          <div className="w-full flex gap-2">
+            <TextInput
+              value={barcodeInput}
+              type="text"
+              className="min-w-[50%] flex-1"
+              placeholder="Barcode Input"
+              onChange={e => setBarcodeInput(e.target.value)}
+              onKeyDown={onKeyDown}
+            />
+            <Button color="gray" onClick={onScan}>
+              Enter
+            </Button>
+            {/* TODO exit button */}
+          </div>
+        </div>
       </div>
     </>
   );
@@ -190,7 +207,7 @@ const RouteCommitProgressPageBody = observer((props: { routeView: RouteView; cur
     }, []) || false;
 
   return (
-    <div className="w-full relative">
+    <div className="w-full">
       <h2 className="text-3xl font-semibold">Import/Export Commit</h2>
       <p className="my-2">Route ID: {routeView.uuid}</p>
 

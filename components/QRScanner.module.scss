@@ -16,11 +16,14 @@
   }
 
   > [id="qr-code-scanner-region__dashboard"] {
-    width: 100%;
+    width: calc(100% - 1rem);
+    padding: 0 0.5rem;
     position: absolute;
     bottom: 0;
+    background-color: white;
 
     > [id="qr-code-scanner-region__dashboard_section"] {
+
       > div:first-child {
         margin-bottom: 0.5rem;
         display: inline-block;
