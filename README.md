@@ -6,6 +6,20 @@ It is a powerful and flexible multi-purpose delivery route manager/planner, whic
 
 ## Glossary
 
+A route consists of a series of Stops and Transports, 
+
+### Route
+
+A route represents a delivering route from one location to multiple destinations, delivering one or many goods from multiple sources to multiple destinations.
+
+Locations with import and export operations are called Stops. A stop may receive goods from a courier, deliver goods to a courier, or both at the same location. The following information is included in a route for each stop: When should the courier arrive? Where should the stop be? And what should be received and sent out?
+
+Transportation is needed for goods to be delivered from one stop to another stop. And someone should be responsible for the delivering duty. Couriers are responsible for transporting goods between stops. A route may involve multiple couriers since each pair of stops may have different couriers. For each pair of stops, questions like how the goods should be delivered and who the courier is should be answered.
+
+### Route Segment
+
+A Route Segment is a Transport with a pair of Stops.
+
 ### Route Proposal
 
 A proposal for a route, including the route itself and signatures from the involved addresses/couriers as a map of hash IDs to signatures. This signature will be the route signed by the private key of the corresponding party and the proposal can only be submit once collected all involved party's signature.
@@ -20,25 +34,21 @@ The signing of the route proposal is executed using the private key of the corre
 
 Upon the completion of the signature process by all involved entities, the route proposal can then be officially submitted.
 
-### Route
-
-A route consists of a series of stops and transports, which represent a real-world good delivering routine from a source address to multiple destination address involving multiple couriers. Each stop may have multiple import and export goods, and multiple couriers are responsible for the transportation between stops.
-
 ### Company
 
-An entity that has a set of internal couriers and addresses.
+An entity with a set of couriers and addresses.
 
 ### Address/Courier Ownership
 
-Any company that have the an address/courier with correct private key in their internal database means they own this specific address/courier.
+Any company that has the address/courier with the correct private key in their internal database owns this specific address/courier.
 
 ### Address & Courier
 
-Courier and Address both serve as identifiers within the system, with the Courier focusing on the transportation courier and the Address representing on physical locations. Each entity is stored in an internal database of the company, accompanied by a private key for ownership verification.
+Courier and address both serve as identifiers within the system, with the courier focusing on the transportation courier and the address representing physical locations. Each entity is stored in the company's internal database, accompanied by a private key for ownership verification.
 
 Upon creation, both created address/courier are stored in the internal database and can be made public by sharing them without the private key via chaincode, making them accessible to all entities in the blockchain network.
 
-When constructing a route proposal, address and courier are selected from the courier list (for Transport) and address book (for Stop). The proposal then need to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, whose own the set of private key of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of both couriers and addresses within the system.
+When constructing a route proposal, address and courier are selected from the courier list (for transport) and address book (for stop). The proposal then needs to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, which owns the set of private keys of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of both couriers and addresses within the system.
 
 ### Address Book & Courier List
 
@@ -46,33 +56,22 @@ The Address Book and Courier List are comprehensive collections that encompass b
 
 Internal entities, whether addresses or couriers, are retrieved from an internal database and must be accompanied by a private key for ownership verification and signing purposes.
 
-External entities, accessed via chaincode to read from the world state, are provided with only a public key, enabling signature validation for the corresponding entity. This dual approach ensures secure and authenticated interactions within the system, facilitating the identification and verification of both addresses and couriers.
+External entities, accessed via chain code to read from the world state, are provided with only a public key, enabling signature validation for the corresponding entity. This dual approach ensures secure and authenticated interactions within the system, facilitating the identification and verification of both addresses and couriers.
 
 ### Good
 
-Good is used to define a trade item as products or services that are being referred to in the delivery process. It has a unique identifier (UUID), name, and barcode. Each company has its own internal database to store the goods data. When creating a new route, the goods will be selected from the internal database. Therefore, the UUID must be unique under the company and route.
+Good is used to define a trade item as products or services that are being referred to in the delivery process. It has a unique identifier (UUID), name, and barcode. Each company has its own internal database to store a set of good definitions. When creating a new route, the definitions are selected from the internal database and used in the route. The UUID must be unique under the company and route.
 
 Good serves as a reference to the actual product or service that is being delivered. A record in the internal database doesn't mean the actual product or service is in the warehouse or store, nor does it mean the product or service is owned by the company.
 
 The barcode is used to identify the product or service in the real world during the check in and check out process. Global Trade Item Number (GTIN) can be used as the barcode to uniquely identify all the goods.
 
-### Route Segment
-
-Segment is a pair of a stop and a transport, which represents the delivery detail between two stops.
-
-### Stop
-
-Stop describe the delivery detail for a specific address on a route with fields for the corresponding address (as a hash ID), expected arrival timestamp, input and output goods (as a map of UUIDs to quantities), and a reference to the next transport in the route.
-
-### Transport
-
-Transport describe the delivery detail for a specific transportation event on a route with fields for the courier (as a hash ID), additional information, and the destination stop.
 
 ### Commit
 
-Commit describe a specific moment on the route for the delivery. The described moment can be status of source outgoing, courier receiving, courier delivering, and destination incoming. It encompasses details of the moment, including changes in goods quantities (delta), additional information, a timestamp indicating the actual time of this state, and a signature for the entity corresponding to the specific moment.
+Commit describes a specific moment on the route for the delivery. The described moment can be status of source outgoing, courier receiving, courier delivering, and destination incoming. It encompasses details of the moment, including changes in goods quantities (delta), additional information, a timestamp indicating the actual time of this state, and a signature for the entity corresponding to the specific moment.
 
-In practical scenarios, when the delivery reaches one of these four statuses in the real world, the company owning the corresponding entity (address/courier) signs the commit detail to ensure its identification, verification, and agreement. Subsequently, a commit marking the completion of this specific moment for the route is released via the chaincode by the company.
+In practical scenarios, when the delivery reaches one of these four statuses in the real world, the company owning the corresponding entity (address/courier) signs the commit detail to ensure its identification, verification, and agreement. Subsequently, a commit marking the completion of this specific moment for the route is released via the company chaincode.
 
 ## World State Standard
 
