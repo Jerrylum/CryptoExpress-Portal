@@ -75,7 +75,7 @@ export const TimelineEditableItem = observer((props: { sat: StopAndTransport; ti
             className=" "
             color="gray">
             <Dropdown.Header>
-              <a href="./addresses" target="_blank">
+              <a href="/addresses" target="_blank">
                 Create an Address
               </a>
             </Dropdown.Header>
@@ -181,7 +181,7 @@ export const TimelineEditableItem = observer((props: { sat: StopAndTransport; ti
                 className=" "
                 color="gray">
                 <Dropdown.Header>
-                  <a href="./couriers" target="_blank">
+                  <a href="/couriers" target="_blank">
                     Create a Courier
                   </a>
                 </Dropdown.Header>
