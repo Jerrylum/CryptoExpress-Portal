@@ -162,7 +162,7 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
         </div>
 
         <div className="w-full my-5">
-          <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
+          <Textarea placeholder="Extra Notes" value={info} onChange={action(e => setInfo(e.target.value))} />
         </div>
 
         <div className="w-full my-5">

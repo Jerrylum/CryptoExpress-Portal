@@ -10,11 +10,11 @@ import { observer } from "mobx-react";
 import { TableCopyableCell } from "./TableCopyableCell";
 import { GoodMoment } from "@/chaincode/RouteView";
 
-export const GoodMomentDataGrid = observer((props: { data: readonly GoodMoment[] }) => {
+export const GoodMomentDeltaDataGrid = observer((props: { data: readonly GoodMoment[] }) => {
   const theme = useTheme([
     getTheme(),
     {
-      Table: `--data-table-library_grid-template-columns: 80px 60% minmax(0, 1fr) 80px;`
+      Table: `--data-table-library_grid-template-columns: 80px minmax(0, 1fr) 80px;`
     }
   ]);
 
@@ -30,14 +30,9 @@ export const GoodMomentDataGrid = observer((props: { data: readonly GoodMoment[]
       renderCell: item => item.name
     },
     {
-      label: "Barcode",
+      label: "Delta",
       resize: true,
-      renderCell: item => item.barcode
-    },
-    {
-      label: "Qty.",
-      resize: true,
-      renderCell: item => item.quantity
+      renderCell: item => item.quantity > 0 ? `+${item.quantity}` : item.quantity
     }
   ] as Column<WithId<GoodMoment>>[];
 
