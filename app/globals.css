@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: Menlo;
-  src: url(/public/Menlo-Regular.ttf);
+  src: url(/static/Menlo-Regular.ttf);
 }
 
 :root {
