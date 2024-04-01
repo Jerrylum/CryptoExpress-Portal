@@ -99,7 +99,8 @@ const nextConfig = {
     config.externals.push({'pkcs11js': 'require("pkcs11js")'})
 
     return config;
-  }
+  },
+  output: "standalone"
 };
 
 export default nextConfig;
