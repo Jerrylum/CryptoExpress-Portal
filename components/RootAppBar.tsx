@@ -23,9 +23,6 @@ function RootAppBar() {
         <Navbar.Link as={Link} href="/couriers">
           Couriers
         </Navbar.Link>
-        <Navbar.Link as={Link} href="/QRScanner">
-          QRScanner
-        </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
   );
