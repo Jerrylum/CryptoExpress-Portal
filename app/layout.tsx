@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import RootAppBar from "@/components/RootAppBar";
 
+const companyName = process.env.COMPANY_NAME;
+
 export const metadata: Metadata = {
-  title: "Crypto Express Portal", // TODO .env
+  title: (companyName ? `${companyName} | ` : "") + "Crypto Express Portal",
   description: "Crypto Express Portal is a decentralized courier service portal."
 };
 
