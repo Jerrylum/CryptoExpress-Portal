@@ -6,11 +6,9 @@ It is a powerful and flexible multi-purpose delivery route manager/planner, whic
 
 ## Glossary
 
-A route consists of a series of Stops and Transports, 
-
 ### Route
 
-A route represents a delivering route from one location to multiple destinations, delivering one or many goods from multiple sources to multiple destinations.
+A route represents a delivering route consists of multiple stops, delivering one or many goods from multiple sources to multiple destinations.
 
 Locations with import and export operations are called Stops. A stop may receive goods from a courier, deliver goods to a courier, or both at the same location. The following information is included in a route for each stop: When should the courier arrive? Where should the stop be? And what should be received and sent out?
 
