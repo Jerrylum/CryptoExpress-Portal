@@ -161,13 +161,13 @@ export const RouteManagePage = observer(() => {
 
   return (
     <div className="w-full" id="main-content">
-      <h2 className="mt-12 mb-2 text-3xl font-semibold">All Route Proposals</h2>
+      <h2 className="mb-2 text-3xl font-semibold">All Route Proposals</h2>
       <SemaphoreContext.Provider value={dataSemaphoreProposal}>
-        <span className="[&>a]:inline">
+        <div className="[&>a]:sm:inline">
           <Button as="a" href="/routes/create" className="my-4">
             Create
           </Button>
-        </span>
+        </div>
         {(isPendingProposal || !proposals) && <p>Loading...</p>}
         {!isPendingProposal && proposals && proposals.length === 0 && <p>No route proposal found</p>}
         {!isPendingProposal &&
