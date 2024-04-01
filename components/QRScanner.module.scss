@@ -9,27 +9,26 @@
     }
   }
 
-  > [id="qr-code-scanner-region__scan_region"] {
+  > [id$="__scan_region"] {
     > img {
       display: none;
     }
   }
 
-  > [id="qr-code-scanner-region__dashboard"] {
-    width: calc(100% - 1rem);
+  > [id$="__dashboard"] {
     padding: 0 0.5rem;
     position: absolute;
     bottom: 0;
     background-color: white;
 
-    > [id="qr-code-scanner-region__dashboard_section"] {
+    > [id$="__dashboard_section"] {
 
       > div:first-child {
         margin-bottom: 0.5rem;
         display: inline-block;
         width: 100%;
 
-        > [id="qr-code-scanner-region__dashboard_section_csr"] {
+        > [id$="__dashboard_section_csr"] {
           > div {
             text-align: left !important;
 

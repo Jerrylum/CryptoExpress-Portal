@@ -18,6 +18,7 @@ import { GoodScanningDataGrid } from "./GoodScanningDataGrid";
 import { UnixDate } from "@/internal/Models";
 import { QRScanner } from "./QRScanner";
 import { Html5QrcodeResult } from "html5-qrcode";
+import classNames from "classnames";
 
 // Assuming necessary imports for Commit, TransportStep, etc., are correctly in place
 
@@ -92,6 +93,7 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
 
   const [barcodeInput, setBarcodeInput] = React.useState("");
   const [info, setInfo] = React.useState("");
+  const [isShowScanningModal, setIsShowScanningModal] = React.useState(false);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -111,6 +113,14 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
     setBarcodeInput("");
   });
 
+  const onStartScanningModal = () => {
+    setIsShowScanningModal(true);
+  };
+
+  const onFinishScanningModal = () => {
+    setIsShowScanningModal(false);
+  };
+
   const onCommit = async () => {
     const commitDetail = {
       delta: scanned,
@@ -123,59 +133,14 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
 
   return (
     <>
-      <div className="w-full my-5">
-        <h3 className="my-2 text-2xl">Scanning</h3>
-        <div className="w-full flex gap-2">
-          <TextInput
-            value={barcodeInput}
-            type="text"
-            className="min-w-[50%]"
-            placeholder="Barcode Input"
-            onChange={e => setBarcodeInput(e.target.value)}
-            onKeyDown={onKeyDown}
-          />
-          <Button color="gray" onClick={onScan}>
-            Enter
-          </Button>
-        </div>
-      </div>
-
-      <div className="w-full my-5 overflow-x-auto md:overflow-hidden">
-        <div className="w-[768px] md:w-full">
-          <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
-        </div>
-      </div>
-
-      <div className="w-full my-5">
-        <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
-      </div>
-
-      <div className="w-full my-5">
-        <Button color="gray" onClick={onCommit}>
-          Commit
-        </Button>
-      </div>
-
-      <div className="fixed top-0 bottom-0 left-0 right-0 bg-white z-10">
-        <QRScanner
-          className="h-full max-h-[calc(100%-108px)]"
-          config={{
-            fps: 10,
-            qrbox: { width: 130, height: 50 },
-            disableFlip: false
-          }}
-          verbose={false}
-          qrCodeSuccessCallback={(decodedText: string, result: Html5QrcodeResult) => {
-            setBarcodeInput(decodedText);
-          }}
-          qrCodeErrorCallback={undefined}
-        />
-        <div className="fixed bottom-2 left-2 right-2 h-[100px] bg-white">
-          <div className="w-full flex gap-2">
+      <div className={classNames("w-full", { hidden: isShowScanningModal })}>
+        <div className="w-full my-5">
+          <h3 className="my-2 text-2xl">Scanning</h3>
+          <div className="w-full flex gap-2 my-2">
             <TextInput
               value={barcodeInput}
               type="text"
-              className="min-w-[50%] flex-1"
+              className="min-w-[50%] max-sm:flex-1"
               placeholder="Barcode Input"
               onChange={e => setBarcodeInput(e.target.value)}
               onKeyDown={onKeyDown}
@@ -183,10 +148,66 @@ const RouteCommitProgressForm = observer((props: { routeView: RouteView; current
             <Button color="gray" onClick={onScan}>
               Enter
             </Button>
-            {/* TODO exit button */}
+          </div>
+
+          <Button color="gray" onClick={onStartScanningModal}>
+            Open Camera
+          </Button>
+        </div>
+
+        <div className="w-full my-5 overflow-x-auto md:overflow-hidden">
+          <div className="w-[768px] md:w-full">
+            <GoodScanningDataGrid scanned={scanned} moment={firstUncommittedMoment} />
           </div>
         </div>
+
+        <div className="w-full my-5">
+          <Textarea placeholder="Extra Information" value={info} onChange={action(e => setInfo(e.target.value))} />
+        </div>
+
+        <div className="w-full my-5">
+          <Button color="gray" onClick={onCommit}>
+            Commit
+          </Button>
+        </div>
       </div>
+
+      {isShowScanningModal && (
+        <div
+          className={classNames("max-sm:fixed top-0 bottom-0 left-0 right-0 bg-white z-10", { hidden: !isShowScanningModal })}>
+          <QRScanner
+            className="h-full max-h-[calc(100%-100px)]"
+            config={{
+              fps: 10,
+              qrbox: { width: 130, height: 50 },
+              disableFlip: false
+            }}
+            verbose={false}
+            qrCodeSuccessCallback={(decodedText: string, result: Html5QrcodeResult) => {
+              setBarcodeInput(decodedText);
+            }}
+            qrCodeErrorCallback={undefined}
+          />
+          <div className="max-sm:fixed bottom-0 left-0 right-0 p-2 h-[100px] bg-white">
+            <div className="w-full flex gap-2">
+              <TextInput
+                value={barcodeInput}
+                type="text"
+                className="max-sm:min-w-[50%] flex-1"
+                placeholder="Barcode Input"
+                onChange={e => setBarcodeInput(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+              <Button color="gray" onClick={onScan}>
+                Enter
+              </Button>
+              <Button color="gray" onClick={onFinishScanningModal}>
+                Finish
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 });
@@ -207,7 +228,7 @@ const RouteCommitProgressPageBody = observer((props: { routeView: RouteView; cur
     }, []) || false;
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <h2 className="text-3xl font-semibold">Import/Export Commit</h2>
       <p className="my-2">Route ID: {routeView.uuid}</p>
 
