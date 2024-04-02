@@ -10,7 +10,6 @@ import React from "react";
 import { GoodSelectModal } from "./GoodSelectModal";
 import { EditableTimeline, StopAndTransport } from "@/internal/EditableTimeline";
 
-
 export const TimelineEditableItem = observer((props: { sat: StopAndTransport; timeline: EditableTimeline }) => {
   const input = props.sat.input;
   const output = props.sat.output;
@@ -115,10 +114,10 @@ export const TimelineEditableItem = observer((props: { sat: StopAndTransport; ti
             min={minTime}
             value={unixDate.toTimeString()}
             onChange={action(e => {
+              const setValue = e.currentTarget.value;
+              if (setValue === "") return;
               const unixDate = new UnixDate(props.sat.expectedArrivalTimestamp);
-              props.sat.expectedArrivalTimestamp = unixDate.setTime(
-                e.target.value as `${number}:${number}`
-              ).unixTimestamp;
+              props.sat.expectedArrivalTimestamp = unixDate.setTime(setValue as `${number}:${number}`).unixTimestamp;
             })}
             className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
           />
