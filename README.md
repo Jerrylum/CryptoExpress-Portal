@@ -12,7 +12,7 @@ A route represents a delivering route consisting of multiple stops, delivering o
 
 Locations with import and export operations are called Stops. A stop may receive goods from a courier, deliver goods to a courier, or both at the exact location. The following information is included in a route for each stop: When should the courier arrive? Where should the stop be? And what should be received and sent out?
 
-Transportation is needed for goods to be delivered from one stop to another. And someone should be responsible for delivering the goods. Couriers are responsible for transporting goods between stops. A route may involve multiple couriers since each pair of stops may have different couriers. For each pair of stops, questions like how the goods should be delivered and who the courier is should be answered.
+Transportation is needed for goods to be delivered from one stop to another. Couriers are responsible for transporting goods between stops. A route may involve multiple couriers since each pair of stops may have different couriers. For each pair of stops, questions like how the goods should be delivered and who the courier is should be answered.
 
 ### Route Segment
 
