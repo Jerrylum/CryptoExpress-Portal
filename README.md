@@ -1,18 +1,18 @@
 ## Introduction
 
-CryptoExpress-Portal is a web-based portal that harnesses the capabilities of Hyperledger Fabric to establish a private blockchain system dedicated to manage goods delivery. It allow to set up a web portal on any device with a web browser, including desktops, laptops, tablets, and mobile phones.
+CryptoExpress-Portal is a web-based portal that harnesses the capabilities of Hyperledger Fabric to establish a private blockchain system dedicated to managing goods delivery. It allows to set up a web portal on any device with a web browser, including desktops, laptops, tablets, and mobile phones.
 
-It is a powerful and flexible multi-purpose delivery route manager/planner, which allows users to manage addresses/couriers/routes status by calling the chaincode to update the world state.
+It is a powerful and flexible multi-purpose delivery route manager/planner that allows users to manage addresses, couriers, and route status by calling the chaincode to update the world state.
 
 ## Glossary
 
 ### Route
 
-A route represents a delivering route consists of multiple stops, delivering one or many goods from multiple sources to multiple destinations.
+A route represents a delivering route consisting of multiple stops, delivering one or many goods from multiple sources to multiple destinations.
 
-Locations with import and export operations are called Stops. A stop may receive goods from a courier, deliver goods to a courier, or both at the same location. The following information is included in a route for each stop: When should the courier arrive? Where should the stop be? And what should be received and sent out?
+Locations with import and export operations are called Stops. A stop may receive goods from a courier, deliver goods to a courier, or both at the exact location. The following information is included in a route for each stop: When should the courier arrive? Where should the stop be? And what should be received and sent out?
 
-Transportation is needed for goods to be delivered from one stop to another stop. And someone should be responsible for the delivering duty. Couriers are responsible for transporting goods between stops. A route may involve multiple couriers since each pair of stops may have different couriers. For each pair of stops, questions like how the goods should be delivered and who the courier is should be answered.
+Transportation is needed for goods to be delivered from one stop to another. And someone should be responsible for delivering the goods. Couriers are responsible for transporting goods between stops. A route may involve multiple couriers since each pair of stops may have different couriers. For each pair of stops, questions like how the goods should be delivered and who the courier is should be answered.
 
 ### Route Segment
 
@@ -20,15 +20,15 @@ A Route Segment is a Transport with a pair of Stops.
 
 ### Route Proposal
 
-A proposal for a route, including the route itself and signatures from the involved addresses/couriers as a map of hash IDs to signatures. This signature will be the route signed by the private key of the corresponding party and the proposal can only be submit once collected all involved party's signature.
+A proposal for a route, including the route itself and signatures from the involved addresses/couriers, as a map of hash IDs to signatures. This signature will be the route signed by the private key of the corresponding party, and the proposal can only be submitted once all involved parties' signatures have been collected.
 
 ### Proposal Signature
 
-To initiate the creation of a route, a route proposal must first be established. This proposal encompasses essential route details, including the source and destination addresses, the courier responsible for the delivery, the goods to be delivered, and the expected delivery timeline.
+A route proposal must first be established to initiate the creation of a route. This proposal encompasses essential route details, including the source and destination addresses, the courier responsible for the delivery, the goods to be delivered, and the expected delivery timeline.
 
 After a route proposal is created, the route proposal needs to be signed by all involved entities. This includes all addresses associated with the stops and the couriers assigned to each transport. The necessity for this signature process stems from the requirement to ensure that every entity involved has consented to the route's specifics.
 
-The signing of the route proposal is executed using the private key of the corresponding entity, thereby confirming their acknowledgment and agreement with the route's details. It is crucial for all involved entities to sign the proposal to validate their consent and to ensure the route's legitimacy.
+The route proposal is signed using the corresponding entity's private key, thereby confirming their acknowledgment and agreement with the route's details. All involved entities must sign the proposal to validate their consent and to ensure the route's legitimacy.
 
 Upon the completion of the signature process by all involved entities, the route proposal can then be officially submitted.
 
@@ -38,7 +38,7 @@ An entity with a set of couriers and addresses.
 
 ### Address/Courier Ownership
 
-Any company that has the address/courier with the correct private key in their internal database owns this specific address/courier.
+Any company with the address/courier with the correct private key in their internal database owns this specific address/courier.
 
 ### Address & Courier
 
@@ -46,49 +46,49 @@ Courier and address both serve as identifiers within the system, with the courie
 
 Upon creation, both created address/courier are stored in the internal database and can be made public by sharing them without the private key via chaincode, making them accessible to all entities in the blockchain network.
 
-When constructing a route proposal, address and courier are selected from the courier list (for transport) and address book (for stop). The proposal then needs to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, which owns the set of private keys of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of both couriers and addresses within the system.
+When constructing a route proposal, the address and courier are selected from the courier list (for transport) and address book (for stop). The proposal then needs to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, which owns the set of private keys of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of couriers and addresses within the system.
 
 ### Address Book & Courier List
 
-The Address Book and Courier List are comprehensive collections that encompass both internal and external entities.
+The Address Book and Courier List are comprehensive collections encompassing internal and external entities.
 
-Internal entities, whether addresses or couriers, are retrieved from an internal database and must be accompanied by a private key for ownership verification and signing purposes.
+Internal entities, whether addresses or couriers, are retrieved from an internal database and must be accompanied by a private key for ownership verification and signing.
 
-External entities, accessed via chain code to read from the world state, are provided with only a public key, enabling signature validation for the corresponding entity. This dual approach ensures secure and authenticated interactions within the system, facilitating the identification and verification of both addresses and couriers.
+External entities, accessed via chain code to read from the world state, are provided with only a public key, enabling signature validation for the corresponding entity. This dual approach ensures secure and authenticated interactions within the system, facilitating the identification and verification of addresses and couriers.
 
 ### Good
 
-Good is used to define a trade item as products or services that are being referred to in the delivery process. It has a unique identifier (UUID), name, and barcode. Each company has its own internal database to store a set of good definitions. When creating a new route, the definitions are selected from the internal database and used in the route. The UUID must be unique under the company and route.
+Good is used to define a trade item as products or services that are being referred to in the delivery process. It has a unique identifier (UUID), name, and barcode. Each company has its internal database to store a set of good definitions. When creating a new route, the definitions are selected from the internal database and used in the route. The UUID must be unique under the company and route.
 
-Good serves as a reference to the actual product or service that is being delivered. A record in the internal database doesn't mean the actual product or service is in the warehouse or store, nor does it mean the product or service is owned by the company.
+Good serves as a reference to the actual product or service that is being delivered. A record in the internal database doesn't mean the actual product or service is in the warehouse or store, nor does it mean the company owns the product or service.
 
-The barcode is used to identify the product or service in the real world during the check in and check out process. Global Trade Item Number (GTIN) can be used as the barcode to uniquely identify all the goods.
+The barcode is used to identify the product or service in the real world during check-in and check-out. Global Trade Item Number (GTIN) can be used as the barcode to uniquely identify all the goods.
 
 
 ### Commit
 
-Commit describes a specific moment on the route for the delivery. The described moment can be status of source outgoing, courier receiving, courier delivering, and destination incoming. It encompasses details of the moment, including changes in goods quantities (delta), additional information, a timestamp indicating the actual time of this state, and a signature for the entity corresponding to the specific moment.
+Commit describes a specific moment on the route for the delivery. The described moment can be the status of the source outgoing, courier receiving, courier delivering, and destination incoming. It encompasses details of the moment, including changes in goods quantities (delta), additional information, a timestamp indicating the actual time of this state, and a signature for the entity corresponding to the specific moment.
 
 In practical scenarios, when the delivery reaches one of these four statuses in the real world, the company owning the corresponding entity (address/courier) signs the commit detail to ensure its identification, verification, and agreement. Subsequently, a commit marking the completion of this specific moment for the route is released via the company chaincode.
 
-## World State Standard
+## World State Data Storage/Retrieval
 
-In the world state, we have set up standards for the key map with the object stored. For detail, please see the readme file at [CryptoExpress-ChainCode](https://github.com/Jerrylum/CryptoExpress-Chaincode)
+In the world state, we have set standards for the key map with the object stored. For details, please see the readme file at [CryptoExpress-ChainCode](https://github.com/Jerrylum/CryptoExpress-Chaincode)
 
 ## Features
 
 - Manage Route on the world state
-  - Create new route proposal
+  - Create a new route proposal
   - Remove a route proposal
-  - Sign route proposal with a internal private key
+  - Sign route proposal with an internal private key
   - Submit a completely signed route proposal
-  - Commit a progress
+  - Commit to progress
 - Manage Addresses on the world state
   - Create a new Address
-  - Remove a existing Address
+  - Remove an existing Address
 - Manage Couriers on the world state
   - Create a new Courier
-  - Remove a existing Courier
+  - Remove an existing Courier
 
 ## Getting Started
 
