@@ -40,7 +40,7 @@ export function CourierAddForm(props: { semaphore: Semaphore }) {
         className={classNames("max-w-[400px]", "w-full", "flex", "flex-col", "gap-2", { hidden: !isAddFormOpen })}>
         <TextInput name="name" type="text" placeholder="Name" required className="flex-1" />
         <TextInput name="company" type="text" placeholder="Company" required className="flex-1" />
-        <TextInput name="telephone" type="text" placeholder="Telephone" required className="flex-1" maxLength={8} />
+        <TextInput name="telephone" type="text" placeholder="Telephone" required className="flex-1" />
         <div className="flex-1 flex items-center">
           <Button color="gray" type="submit" className="w-20">
             Add
