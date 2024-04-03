@@ -1,6 +1,7 @@
 "use server";
 
 import { Good } from "@/chaincode/Models";
+import fs from "fs";
 
 // const (await data()) = new Map<string, Good>();
 
@@ -12,7 +13,7 @@ async function data() {
 
     console.log("Initializing InternalGoodCollection database");
 
-    const records = (await import("@/db/goods.json")) as Good[];
+    const records = JSON.parse(fs.readFileSync("db/goods.json", "utf-8")) as Good[];
     for (let i = 0; i < records.length; i++) {
       // Must use traditional for
       await set(records[i]);

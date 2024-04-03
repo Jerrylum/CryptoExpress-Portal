@@ -2,6 +2,7 @@
 
 import { CourierWithPrivateKey, generateCourierWithPrivateKey, importCourierWithPrivateKey } from "./Models";
 import * as CourierCollection from "@/internal/CourierCollection";
+import fs from "fs";
 
 let _data: Map<string, CourierWithPrivateKey>;
 
@@ -11,7 +12,7 @@ async function data() {
 
     console.log("Initializing InternalCourierCollection database");
 
-    const records = (await import("@/db/couriers.json")) as CourierWithPrivateKey[];
+    const records = JSON.parse(fs.readFileSync("db/couriers.json", "utf-8")) as CourierWithPrivateKey[];
     for (let i = 0; i < records.length; i++) {
       // Must use traditional for
       await add(records[i]);

@@ -2,6 +2,7 @@
 
 import { AddressWithPrivateKey, generateAddressWithPrivateKey, importAddressWithPrivateKey } from "./Models";
 import * as AddressCollection from "./AddressCollection";
+import fs from "fs";
 
 let _data: Map<string, AddressWithPrivateKey>;
 
@@ -11,7 +12,7 @@ async function data() {
 
     console.log("Initializing InternalAddressCollection database");
 
-    const records = (await import("@/db/addresses.json")) as AddressWithPrivateKey[];
+    const records = JSON.parse(fs.readFileSync("db/addresses.json", "utf-8")) as AddressWithPrivateKey[];
     for (let i = 0; i < records.length; i++) {
       // Must use traditional for
       await add(records[i]);
