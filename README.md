@@ -1,6 +1,6 @@
 ## Introduction
 
-CryptoExpress-Portal is a web-based portal that harnesses the capabilities of Hyperledger Fabric to establish a private blockchain system dedicated to managing goods delivery. It allows to set up a web portal on any device with a web browser, including desktops, laptops, tablets, and mobile phones.
+CryptoExpress-Portal is a web-based portal that harnesses the capabilities of Hyperledger Fabric to establish a private blockchain system dedicated to managing goods delivery. It allows users to set up a web portal on any device with a web browser, including desktops, laptops, tablets, and mobile phones.
 
 It is a powerful and flexible multi-purpose delivery route manager/planner that allows users to manage addresses, couriers, and route status by calling the chaincode to update the world state.
 
@@ -128,7 +128,7 @@ git clone https://github.com/Jerrylum/CryptoExpress-Portal.git
 
 ### Setup Development Network
 
-Run the following commands to setup the development network.
+Run the following commands to set up the development network.
 
 ```bash
 cd ~/CryptoExpress-Network
@@ -167,4 +167,49 @@ npm install
 npm run dev
 ```
 
-## Usage
+## User Interface
+CryptoExpress-Portal is designed to provide a user-friendly interface for managing routes, addresses, and couriers. The platform is built with simplicity and ease of use in mind, ensuring that users can access the functionalities with minimal effort.
+
+### Home Page
+The home page serves as the gateway to the portal, featuring a clean and intuitive layout. It includes six components that lead to different pages of the portal:
+![Capture of Home Page](./resources/HomePage.png)
+
+1. `Address Book Access Point`: The gateway to the Address Book page.
+2. `Courier List Access Point`: The gateway to the Courier List page.
+3. `Good Library Access Point`: The gateway to the Good Library page.
+4. `Route List Access Point`: The gateway to the Route List page.
+5. `Route Creation Access Point`: The gateway to the Route Creation page.
+6. `Navigation Bar`: The main navigation menu to all pages.
+
+### Address Page
+The Address Page is the central hub for managing the address book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public addresses via the chaincode and retrieves internal addresses from the internal database.
+
+One of the key features of the Address Page is its support for filtering addresses based on specific details of the address, ensuring users can easily locate and manage the addresses they are interested in. 
+
+Additionally, the Address Page empowers users to create new internal addresses. This can be achieved by either manually entering the details of the new address or by providing a JSON string of the address, accompanied by a valid private key. 
+
+For each address record, the Address Page provides a set of actionable buttons on the left side. These buttons enable users to execute various operations including releasing or unlisting a public or internal address, removing an internal address from the internal database, and exporting an internal address as a JSON string object. 
+
+![Capture of Address Page](./resources/AddressPage.png)
+
+1. `New Internal Address Creation Section (Address Details)`: Activated upon the Switch-to-Input Button, the section creates a new internal address to the database by detailing the necessary information (recipent, lines 1, 2) required.
+2. `Add New Address Button`: A button allows users to input details for a new internal address, which is then added to the internal address database.
+3. `Switch-to-Secret Button`: A toggle button to shift the method for creating a new internal address to the secret.
+4. `Address Book Display`: The section presents a grid layout for displaying addresses from the address book, accompanied by a search bar and actionable buttons for each record. Users can select a Hash ID to copy the address value.
+5. `Search Bar`: An input field intended for filtering the address book's results based on the user's query.
+6. `Actionable Buttons (for each address record)`:
+    1. `Unlist Address Button`: A button removes a public address from the world state.
+    2. `Release Address Button`: A button makes a target internal address available in the world state.
+    3. `Remove from Internal Button`: A button deletes an internal address.
+    4. `Export Secret Button`: A button exports the target internal address as a JSON string to the clipboard.
+7.` New Internal Address Creation Section (Secret)`: Activated upon the Switch-to-Secret Button, the section creates a new internal address to the database by providing a JSON string object of address with the valid secret key.
+8. `Import Button`: A button allows users to input a secret to create a new internal address in the database. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
+9. `Switch-to-Input Button`: A toggle button designed to shift the method for creating a new internal address to address details.
+
+### Courier Page
+
+### Good Page
+
+### Route Creation Page
+
+### Route List Page
