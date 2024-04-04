@@ -279,5 +279,40 @@ The Good Selection Modal is a pop-up modal that allows users to select the goods
 5. `Close Button`: The button to close the modal.
 
 ### Route List Page
+The Route List Page is designed to display all the route proposals and submitted routes stored in the world state. It provides a comprehensive overview of the routes, including their details, status, and involved parties.
+
+![Capture of Route List Page](./resources/RoutePageRouteProposal.png)
+This is an example to illustrate the Route List Page for displaying a route proposal.
+
+1. `Route Proposal List`: The section presents a set of timeline layouts for displaying route proposals from the world state, accompanied by a route proposal button and multiple `Route Proposal Detail` for each route proposal.
+2. `Route Proposal Detail`: The section displays detailed information on a specific route proposal in a timeline, including the stops, the transportation, the expected delivery time, and the set of action buttons.
+3. `Route Proposal Button`: The button to navigate to the [Route Creation Page](#route-creation-page) for creating a new route proposal.
+4. `Expand Button`: The button to expand the detailed information of the route proposal. This further displays the route proposal detail with the import/export goods details, the extra information provided and the signature status from each party.
+5. `Submit button`: The button to submit the route proposal after all involved parties have signed the proposal. This button is disabled if the proposal is not completely signed.
+6. `Remove Button`: The button to remove the route proposal from the world state.
+
+![Capture of Route List Page](./resources/RoutePageSubmittedRoute.png)
+This is an example to illustrate the Route List Page for displaying a submitted route.
+
+1. `Route List`: The section presents a set of timeline layouts for displaying submitted routes from the world state, accompanied by multiple `Route Detail` for each submitted route. 
+2. `Route Detail`: The section displays detailed information on a specific submitted route in a timeline, including the stops, the transportation, the expected delivery time, and the set of action buttons.
+3. `Expand Button`: The button to expand the detailed information of the submitted route. This further displays the route detail with the import/export goods details, the extra information provided, and the commit status from each party.
+4. `Commit Button`: The button to navigate to the [Route Commit Page](#route-commit-page) for committing the route progress.
+
+![Capture of Route List Page Signing](./resources/RoutePageRouteProposal_Sign.png)
+This is an example to illustrate the Route List Page for signing a route proposal.
+
+1. `Collapse Button`: The button to collapse the detailed information of the route proposal.
+2. `Sign Button`: The button to sign the route proposal with the corresponding private key if the internal database has ownership of the corresponding address/courier. A "Signed" label is showing if the proposal is signed by the corresponding party.
+
+![Capture of Route List Page Commit](./resources/RoutePageSubmittedRoute_Commit.png)
+This is an example to illustrate the Route List Page for displaying the commit status of a submitted route. The details of the commit can refer to the [Route Commit Page](#route-commit-page).
+
+1. `Source Outgoing`: The section displays the commit status of the source outgoing.
+2. `Commit Delta`: The section displays the anomalies (mismatch with the original route import/export) in the quantity of the good at the specific commit.
+3. `Extra Notes`: The section displays the extra information provided by the corresponding party.
+4. `Courier Receiving`: The section displays the commit status of the courier receiving.
+5. `Courier Delivering`: The section displays the commit status of the courier delivering.
+6. `Destination Incoming`: The section displays the commit status of the destination incoming.
 
 ### Route Commit Page
