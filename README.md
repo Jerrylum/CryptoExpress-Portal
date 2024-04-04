@@ -268,9 +268,15 @@ The Route Creation Page is designed to facilitate the creation of new route prop
 14. `Create Proposal Button`: The button to create a new route proposal based on the inputted route details. The proposal will be pushed to the world state and wait for all involved parties' signatures and the submission.
 
 ### Good Selection Modal
-The Good Selection Modal is a pop-up window that allows users to select the goods to be imported/exported at each stop. It provides a user-friendly interface for users to browse the good library and select the desired goods.
+The Good Selection Modal is a pop-up modal that allows users to select the goods to be imported/exported at each stop. It provides a user-friendly interface for users to browse the good library and select the desired goods.
 
 ![Capture of Good Selection Modal](./resources/CreateRouteProposal_GoodModal.png)
+
+1. `Search Bar`: An input field intended for filtering the Good Library's results based on the user's query.
+2. `Refresh Button`: The button to refresh the list of goods in the Good Library.
+3. `Good Library`: The section presents a grid layout for displaying goods from the internal database.
+4. `Add Button`: The button to select the target good item and add it to the import/export list.
+5. `Close Button`: The button to close the modal.
 
 ### Route List Page
 
