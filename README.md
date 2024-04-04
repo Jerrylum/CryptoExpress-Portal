@@ -46,11 +46,11 @@ Courier and address both serve as identifiers within the system, with the courie
 
 Upon creation, both created address/courier are stored in the internal database and can be made public by sharing them without the private key via chaincode, making them accessible to all entities in the blockchain network.
 
-When constructing a route proposal, the address and courier are selected from the courier list (for transport) and address book (for stop). The proposal then needs to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, which owns the set of private keys of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of couriers and addresses within the system.
+When constructing a route proposal, the address and courier are selected from the courier book (for transport) and address book (for stop). The proposal then needs to be signed with the corresponding private key to confirm acknowledgment of the route by the corresponding company, which owns the set of private keys of the involved addresses and couriers. This ensures secure and authenticated agreement and consensus with the route's details, facilitating the identification and verification of couriers and addresses within the system.
 
-### Address Book & Courier List
+### Address & Courier Book
 
-The Address Book and Courier List are comprehensive collections encompassing internal and external entities.
+The Address and Courier Book are comprehensive collections encompassing internal and external entities.
 
 Internal entities, whether addresses or couriers, are retrieved from an internal database and must be accompanied by a private key for ownership verification and signing.
 
@@ -176,7 +176,7 @@ The home page serves as the gateway to the portal, featuring a clean and intuiti
 ![Capture of Home Page](./resources/HomePage.png)
 
 1. `Address Book Access Point`: The gateway to the Address Book page.
-2. `Courier List Access Point`: The gateway to the Courier List page.
+2. `Courier Book Access Point`: The gateway to the Courier Book page.
 3. `Good Library Access Point`: The gateway to the Good Library page.
 4. `Route List Access Point`: The gateway to the Route List page.
 5. `Route Creation Access Point`: The gateway to the Route Creation page.
@@ -208,6 +208,29 @@ For each address record, the Address Page provides a set of action buttons on th
 9. `Navigate-to-Input Button`: The toggle button navigates to the manual input section.
 
 ### Courier Page
+The Courier Page serves as the central hub for managing the courier book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public couriers via the chaincode and retrieves couriers from the internal database.
+
+A key feature of the Courier Page is its ability to filter couriers based on specific details, making it easy for users to locate and manage the couriers they are interested in.
+
+Furthermore, the Courier Page allows users to create new internal couriers. This can be done by manually entering the new courier's details or by providing a JSON string of the courier, along with a valid private key.
+
+For each courier record, the Courier Page offers a set of action buttons on the right side. These buttons enable users to perform various operations, including releasing or unlisting an internal or public courier, removing a courier from the internal database, and exporting an internal courier as a JSON string object.
+
+![Capture of Courier Page](./resources/CourierPage.png)
+
+1. `New Internal Courier Section (Manually Input)`: Activated upon the Navigate-to-Input Button, the section creates a new courier to the internal database by detailing the necessary information (name, email) required.
+2. `Add Button`: The button to create a new internal courier based on the inputted courier details.
+3. `Navigate-to-Import Button`: The toggle button navigates to the import courier section.
+4. `Courier Book`: The section presents a grid layout for displaying couriers from the courier book, accompanied by a search bar and action buttons for each record. Users can select a Hash ID to copy the courier value.
+5. `Search Bar`: An input field intended for filtering the courier book's results based on the user's query.
+6. `Action Buttons (for each courier record)`:
+    1. `Unlist Courier Button`: The button removes a public courier from the world state.
+    2. `Release Courier Button`: The button makes a target internal courier available in the world state.
+    3. `Remove from Internal Button`: The button deletes an internal courier.
+    4. `Export Secret Button`: The button exports the target internal courier as a JSON string to the clipboard.
+7. `New Internal Courier Section (Import)`: Activated upon the Navigate-to-Import Button, the section creates a new courier to the internal database by providing a JSON string object of courier with the valid secret key.
+8. `Import Button`: The button to import a new courier to the internal database based on the inputted secret. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
+9. `Navigate-to-Input Button`: The toggle button navigates to the manual input section.
 
 ### Good Page
 The Good Page is the central hub for managing the local internal goods database. It enables users to add new goods, including their details such as name and barcode, to the database. Each good is assigned a unique identifier (UUID) for identification and is displayed in a grid layout.
