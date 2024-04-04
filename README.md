@@ -242,7 +242,7 @@ The Good Page is the central hub for managing the local internal goods database.
 ![Capture of Good Page](./resources/GoodPage.png)
 
 1. `New Good Creation Section`: The section creates a new good definition for the internal database by detailing the necessary information (name, barcode) required.
-2. `Good Library`: The section presents a grid layout for displaying goods from the internal database, accompanied by a search bar and remove button for each record.
+2. `Good Library`: The section presents a grid layout for displaying goods from the internal database, accompanied by a search bar and remove button for each record. The user can click on the name or barcode to modify the good details.
 3. `Add Button`: The button to create a new good definition to the internal database based on the inputted goods details.
 4. `Search Bar`: An input field intended for filtering the Good Library's results based on the user's query.
 5. `Remove Button`: The button to remove a good definition from the internal database.
