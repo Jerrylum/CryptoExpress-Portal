@@ -171,7 +171,8 @@ npm run dev
 CryptoExpress-Portal is designed to provide a user-friendly interface for managing routes, addresses, and couriers. The platform is built with simplicity and ease of use in mind, ensuring that users can access the functionalities with minimal effort.
 
 ### Home Page
-The home page serves as the gateway to the portal, featuring a clean and intuitive layout. It includes six components that lead to different pages of the portal:
+The home page serves as the gateway to the portal, featuring a clean and intuitive layout. It includes six components that lead to different pages of the portal.
+
 ![Capture of Home Page](./resources/HomePage.png)
 
 1. `Address Book Access Point`: The gateway to the Address Book page.
@@ -179,37 +180,48 @@ The home page serves as the gateway to the portal, featuring a clean and intuiti
 3. `Good Library Access Point`: The gateway to the Good Library page.
 4. `Route List Access Point`: The gateway to the Route List page.
 5. `Route Creation Access Point`: The gateway to the Route Creation page.
-6. `Navigation Bar`: The main navigation menu to all pages.
+6. `Navigation Bar`: The main navigation menu for all pages.
 
 ### Address Page
-The Address Page is the central hub for managing the address book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public addresses via the chaincode and retrieves internal addresses from the internal database.
+The Address Page is the central hub for managing the address book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public addresses via the chaincode and retrieves addresses from the internal database.
 
 One of the key features of the Address Page is its support for filtering addresses based on specific details of the address, ensuring users can easily locate and manage the addresses they are interested in. 
 
 Additionally, the Address Page empowers users to create new internal addresses. This can be achieved by either manually entering the details of the new address or by providing a JSON string of the address, accompanied by a valid private key. 
 
-For each address record, the Address Page provides a set of actionable buttons on the left side. These buttons enable users to execute various operations including releasing or unlisting a public or internal address, removing an internal address from the internal database, and exporting an internal address as a JSON string object. 
+For each address record, the Address Page provides a set of action buttons on the right side. These buttons enable users to execute various operations including releasing or unlisting an internal or public address, removing an address from the internal database, and exporting an internal address as a JSON string object. 
 
 ![Capture of Address Page](./resources/AddressPage.png)
 
-1. `New Internal Address Creation Section (Address Details)`: Activated upon the Switch-to-Input Button, the section creates a new internal address to the database by detailing the necessary information (recipent, lines 1, 2) required.
-2. `Add New Address Button`: A button allows users to input details for a new internal address, which is then added to the internal address database.
-3. `Switch-to-Secret Button`: A toggle button to shift the method for creating a new internal address to the secret.
-4. `Address Book Display`: The section presents a grid layout for displaying addresses from the address book, accompanied by a search bar and actionable buttons for each record. Users can select a Hash ID to copy the address value.
+1. `New Internal Address Section (Manually Input)`: Activated upon the Navigate-to-Input Button, the section creates a new address to the internal database by detailing the necessary information (recipient, lines 1, 2) required.
+2. `Add Button`: The button to create a new internal address based on the inputted address details.
+3. `Navigate-to-Import Button`: The toggle button navigates to the import address section.
+4. `Address Book`: The section presents a grid layout for displaying addresses from the address book, accompanied by a search bar and action buttons for each record. Users can select a Hash ID to copy the address value.
 5. `Search Bar`: An input field intended for filtering the address book's results based on the user's query.
-6. `Actionable Buttons (for each address record)`:
-    1. `Unlist Address Button`: A button removes a public address from the world state.
-    2. `Release Address Button`: A button makes a target internal address available in the world state.
-    3. `Remove from Internal Button`: A button deletes an internal address.
-    4. `Export Secret Button`: A button exports the target internal address as a JSON string to the clipboard.
-7.` New Internal Address Creation Section (Secret)`: Activated upon the Switch-to-Secret Button, the section creates a new internal address to the database by providing a JSON string object of address with the valid secret key.
-8. `Import Button`: A button allows users to input a secret to create a new internal address in the database. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
-9. `Switch-to-Input Button`: A toggle button designed to shift the method for creating a new internal address to address details.
+6. `Action Buttons (for each address record)`:
+    1. `Unlist Address Button`: The button removes a public address from the world state.
+    2. `Release Address Button`: The button makes a target internal address available in the world state.
+    3. `Remove from Internal Button`: The button deletes an internal address.
+    4. `Export Secret Button`: The button exports the target internal address as a JSON string to the clipboard.
+7. `New Internal Address Section (Import)`: Activated upon the Navigate-to-Import Button, the section creates a new address to the internal database by providing a JSON string object of address with the valid secret key.
+8. `Import Button`: The button to import a new address to the internal database based on the inputted secret. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
+9. `Navigate-to-Input Button`: The toggle button navigates to the manual input section.
 
 ### Courier Page
 
 ### Good Page
+The Good Page is the central hub for managing the local internal goods database. It enables users to add new goods, including their details such as name and barcode, to the database. Each good is assigned a unique identifier (UUID) for identification and is displayed in a grid layout.
+
+![Capture of Good Page](./resources/GoodPage.png)
+
+1. `New Good Creation Section`: The section creates a new good definition for the internal database by detailing the necessary information (name, barcode) required.
+2. `Good Library`: The section presents a grid layout for displaying goods from the internal database, accompanied by a search bar and remove button for each record.
+3. `Add Button`: The button to create a new good definition to the internal database based on the inputted goods details.
+4. `Search Bar`: An input field intended for filtering the Good Library's results based on the user's query.
+5. `Remove Button`: The button to remove a good definition from the internal database.
 
 ### Route Creation Page
 
 ### Route List Page
+
+### Route Commit Page
