@@ -64,7 +64,6 @@ Good serves as a reference to the actual product or service that is being delive
 
 The barcode is used to identify the product or service in the real world during check-in and check-out. Global Trade Item Number (GTIN) can be used as the barcode to uniquely identify all the goods.
 
-
 ### Commit
 
 Commit describes a specific moment on the route for the delivery. The described moment can be the status of the source outgoing, courier receiving, courier delivering, and destination incoming. It encompasses details of the moment, including changes in goods quantities (delta), additional information, a timestamp indicating the actual time of this state, and a signature for the entity corresponding to the specific moment.
@@ -168,9 +167,11 @@ npm run dev
 ```
 
 ## User Interface
+
 CryptoExpress-Portal is designed to provide a user-friendly interface for managing routes, addresses, and couriers. The platform is built with simplicity and ease of use in mind, ensuring that users can access the functionalities with minimal effort.
 
 ### Home Page
+
 The home page serves as the gateway to the portal, featuring a clean and intuitive layout. It includes six components that lead to different pages of the portal.
 
 ![Capture of Home Page](./resources/HomePage.png)
@@ -183,13 +184,14 @@ The home page serves as the gateway to the portal, featuring a clean and intuiti
 6. `Navigation Bar`: The main navigation menu for all pages.
 
 ### Address Page
+
 The Address Page is the central hub for managing the address book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public addresses via the chaincode and retrieves addresses from the internal database.
 
-One of the key features of the Address Page is its support for filtering addresses based on specific details of the address, ensuring users can easily locate and manage the addresses they are interested in. 
+One of the key features of the Address Page is its support for filtering addresses based on specific details of the address, ensuring users can easily locate and manage the addresses they are interested in.
 
-Additionally, the Address Page empowers users to create new internal addresses. This can be achieved by either manually entering the details of the new address or by providing a JSON string of the address, accompanied by a valid private key. 
+Additionally, the Address Page empowers users to create new internal addresses. This can be achieved by either manually entering the details of the new address or by providing a JSON string of the address, accompanied by a valid private key.
 
-For each address record, the Address Page provides a set of action buttons on the right side. These buttons enable users to execute various operations including releasing or unlisting an internal or public address, removing an address from the internal database, and exporting an internal address as a JSON string object. 
+For each address record, the Address Page provides a set of action buttons on the right side. These buttons enable users to execute various operations including releasing or unlisting an internal or public address, removing an address from the internal database, and exporting an internal address as a JSON string object.
 
 ![Capture of Address Page](./resources/AddressPage.png)
 
@@ -199,15 +201,16 @@ For each address record, the Address Page provides a set of action buttons on th
 4. `Address Book`: The section presents a grid layout for displaying addresses from the address book, accompanied by a search bar and action buttons for each record. Users can select a Hash ID to copy the address value.
 5. `Search Bar`: An input field intended for filtering the address book's results based on the user's query.
 6. `Action Buttons (for each address record)`:
-    1. `Unlist Address Button`: The button removes a public address from the world state.
-    2. `Release Address Button`: The button makes a target internal address available in the world state.
-    3. `Remove from Internal Button`: The button deletes an internal address.
-    4. `Export Secret Button`: The button exports the target internal address as a JSON string to the clipboard.
+   1. `Unlist Address Button`: The button removes a public address from the world state.
+   2. `Release Address Button`: The button makes a target internal address available in the world state.
+   3. `Remove from Internal Button`: The button deletes an internal address.
+   4. `Export Secret Button`: The button exports the target internal address as a JSON string to the clipboard.
 7. `New Internal Address Section (Import)`: Activated upon the Navigate-to-Import Button, the section creates a new address to the internal database by providing a JSON string object of address with the valid secret key.
 8. `Import Button`: The button to import a new address to the internal database based on the inputted secret. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
 9. `Navigate-to-Input Button`: The toggle button navigates to the manual input section.
 
 ### Courier Page
+
 The Courier Page serves as the central hub for managing the courier book within the CryptoExpress-Portal. It seamlessly integrates with the blockchain to fetch all public couriers via the chaincode and retrieves couriers from the internal database.
 
 A key feature of the Courier Page is its ability to filter couriers based on specific details, making it easy for users to locate and manage the couriers they are interested in.
@@ -224,15 +227,16 @@ For each courier record, the Courier Page offers a set of action buttons on the 
 4. `Courier Book`: The section presents a grid layout for displaying couriers from the courier book, accompanied by a search bar and action buttons for each record. Users can select a Hash ID to copy the courier value.
 5. `Search Bar`: An input field intended for filtering the courier book's results based on the user's query.
 6. `Action Buttons (for each courier record)`:
-    1. `Unlist Courier Button`: The button removes a public courier from the world state.
-    2. `Release Courier Button`: The button makes a target internal courier available in the world state.
-    3. `Remove from Internal Button`: The button deletes an internal courier.
-    4. `Export Secret Button`: The button exports the target internal courier as a JSON string to the clipboard.
+   1. `Unlist Courier Button`: The button removes a public courier from the world state.
+   2. `Release Courier Button`: The button makes a target internal courier available in the world state.
+   3. `Remove from Internal Button`: The button deletes an internal courier.
+   4. `Export Secret Button`: The button exports the target internal courier as a JSON string to the clipboard.
 7. `New Internal Courier Section (Import)`: Activated upon the Navigate-to-Import Button, the section creates a new courier to the internal database by providing a JSON string object of courier with the valid secret key.
 8. `Import Button`: The button to import a new courier to the internal database based on the inputted secret. This process includes validating the input JSON string object for the secret key's validity, structure, and attribute types.
 9. `Navigate-to-Input Button`: The toggle button navigates to the manual input section.
 
 ### Good Page
+
 The Good Page is the central hub for managing the local internal goods database. It enables users to add new goods, including their details such as name and barcode, to the database. Each good is assigned a unique identifier (UUID) for identification and is displayed in a grid layout.
 
 ![Capture of Good Page](./resources/GoodPage.png)
@@ -244,6 +248,7 @@ The Good Page is the central hub for managing the local internal goods database.
 5. `Remove Button`: The button to remove a good definition from the internal database.
 
 ### Route Creation Page
+
 The Route Creation Page is designed to facilitate the creation of new route proposals. It provides a user-friendly interface for users to input the necessary details for a route, including the source and destination addresses, the courier responsible for the delivery, the goods to be delivered, and the expected delivery timeline.
 
 ![Capture of Route Creation Page 1](./resources/CreateRouteProposal1.png)
@@ -260,7 +265,7 @@ The Route Creation Page is designed to facilitate the creation of new route prop
 6. `Add Import Good Button`: The button to open the [Good Selection Modal](#good-selection-modal) to select the goods to be imported at the selected stop.
 7. `Increase/Decrease Button`: The buttons to increase or decrease the quantity.
 8. `Remove Good Button`: The button to remove the selected good item.
-9. `Add Export Good Button`: The button to open the [Good Selection Modal]((#good-selection-modal)) to select the goods to be exported at the selected stop.
+9. `Add Export Good Button`: The button to open the [Good Selection Modal](<(#good-selection-modal)>) to select the goods to be exported at the selected stop.
 10. `Transport Detail`: The section allows users to select the courier responsible for the delivery between each pair of stops. An extra information field is provided for additional information to the courier.
 11. `Courier Book Dropdown`: The dropdown menu to select the courier from the courier book. The `Create a Courier` button can open a new page for creating a new courier on the courier page, and a `Refresh` button to refresh the list after creating a new courier.
 12. `Transport Info`: The input field provides additional information to the courier, such as the type of transportation or any other relevant details.
@@ -268,6 +273,7 @@ The Route Creation Page is designed to facilitate the creation of new route prop
 14. `Create Proposal Button`: The button to create a new route proposal based on the inputted route details. The proposal will be pushed to the world state and wait for all involved parties' signatures and the submission.
 
 ### Good Selection Modal
+
 The Good Selection Modal is a pop-up modal that allows users to select the goods to be imported/exported at each stop. It provides a user-friendly interface for users to browse the good library and select the desired goods.
 
 ![Capture of Good Selection Modal](./resources/CreateRouteProposal_GoodModal.png)
@@ -279,6 +285,7 @@ The Good Selection Modal is a pop-up modal that allows users to select the goods
 5. `Close Button`: The button to close the modal.
 
 ### Route List Page
+
 The Route List Page is designed to display all the route proposals and submitted routes stored in the world state. It provides a comprehensive overview of the routes, including their details, status, and involved parties.
 
 ![Capture of Route List Page](./resources/RoutePageRouteProposal.png)
@@ -294,7 +301,7 @@ This is an example to illustrate the Route List Page for displaying a route prop
 ![Capture of Route List Page](./resources/RoutePageSubmittedRoute.png)
 This is an example to illustrate the Route List Page for displaying a submitted route.
 
-1. `Route List`: The section presents a set of timeline layouts for displaying submitted routes from the world state, accompanied by multiple `Route Detail` for each submitted route. 
+1. `Route List`: The section presents a set of timeline layouts for displaying submitted routes from the world state, accompanied by multiple `Route Detail` for each submitted route.
 2. `Route Detail`: The section displays detailed information on a specific submitted route in a timeline, including the stops, the transportation, the expected delivery time, and the set of action buttons.
 3. `Expand Button`: The button to expand the detailed information of the submitted route. This further displays the route detail with the import/export goods details, the extra information provided, and the commit status from each party.
 4. `Commit Button`: The button to navigate to the [Route Commit Page](#route-commit-page) for committing the route progress.
@@ -316,6 +323,7 @@ This is an example to illustrate the Route List Page for displaying the commit s
 6. `Destination Incoming`: The section displays the commit status of the destination incoming.
 
 ### Route Commit Page
+
 The Route Commit Page is designed to facilitate the commitment of route progress. It provides a user-friendly interface for users to commit to specific moments on the route, including the source outgoing, courier receiving, courier delivering, and destination incoming.
 
 ![Capture of Route Commit Page](./resources/CommitPage.png)
@@ -339,4 +347,3 @@ This is an example to illustrate the Route Commit Page for scanning the barcode 
 4. `Barcode Input`: The input field displays the result of the barcode scanning. The user can also manually input the barcode if the scanning fails.
 5. `Enter Button`: The button to update the commit based on the barcode inputted.
 6. `Finish Button`: The button to close the camera layout.
-
