@@ -316,3 +316,27 @@ This is an example to illustrate the Route List Page for displaying the commit s
 6. `Destination Incoming`: The section displays the commit status of the destination incoming.
 
 ### Route Commit Page
+The Route Commit Page is designed to facilitate the commitment of route progress. It provides a user-friendly interface for users to commit to specific moments on the route, including the source outgoing, courier receiving, courier delivering, and destination incoming.
+
+![Capture of Route Commit Page](./resources/CommitPage.png)
+
+1. `Current Step`: The section displays the details of the current step of the route progress, including the current moment, the involved parties, and the description of the current step.
+2. `Scanning`: The section provides an input field to check-in the delivering items by entering the barcode. The involved goods are shown as a grid layout with the quantity required. The user can enter the barcode manually, then press "Enter" (or click the "Enter" button) or use the scanning feature/a barcode scanner, to update the corresponding quantity of the good.
+3. `Enter Button`: The button to update the commit based on the barcode inputted.
+4. `Open Camera Button`: The button to open the camera layout for scanning the barcode.
+5. `Quantity of Good`: The input field to manually input the quantity of the good.
+6. `Extra Information`: The input field to provide additional information for the commit.
+7. `Commit Button`: The button to commit the current step of the route progress.
+
+For the Camera feature, the browser will ask for permission to access the camera. The user needs to allow the browser to access the camera to use this feature. This feature will be available on any devices with a camera including personal computers or mobile phones.
+
+![Capture of Commit Scanning](./resources/CommitPageScan.png)
+This is an example to illustrate the Route Commit Page for scanning the barcode of the good.
+
+1. `Camera View`: The section displays the camera view for scanning the barcode of the good.
+2. `Select Camera`: The dropdown menu to select the camera for scanning the barcode.
+3. `Start/Stop Scanning Button`: The button to start/stop the camera for scanning the barcode.
+4. `Barcode Input`: The input field displays the result of the barcode scanning. The user can also manually input the barcode if the scanning fails.
+5. `Enter Button`: The button to update the commit based on the barcode inputted.
+6. `Finish Button`: The button to close the camera layout.
+
