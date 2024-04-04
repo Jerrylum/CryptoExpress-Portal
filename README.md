@@ -244,6 +244,33 @@ The Good Page is the central hub for managing the local internal goods database.
 5. `Remove Button`: The button to remove a good definition from the internal database.
 
 ### Route Creation Page
+The Route Creation Page is designed to facilitate the creation of new route proposals. It provides a user-friendly interface for users to input the necessary details for a route, including the source and destination addresses, the courier responsible for the delivery, the goods to be delivered, and the expected delivery timeline.
+
+![Capture of Route Creation Page 1](./resources/CreateRouteProposal1.png)
+
+![Capture of Route Creation Page 2](./resources/CreateRouteProposal2.png)
+
+![Capture of Route Creation Page 3](./resources/CreateRouteProposal3.png)
+
+1. `Stop Detail`: The section allows users to select the address for the current stop, setting the expected arrival time for the courier, and the export/import goods at each stop.
+2. `Remove Destination Button`: The button to remove the selected stop from the route.
+3. `Address Book Dropdown`: The dropdown menu to select the address from the address book. The `Create an Address` button can open a new page for creating a new address on the address page, and a `Refresh` button to refresh the list after creating a new address.
+4. `Expected Arrival Time`: The input field sets the expected arrival date and time for the courier at the selected address. The date and time must be later than the previous stop. To ensure the validity of the date and time, the system will adjust the value if needed.
+5. `Import & Export`: The section allows users to select the goods to be exported/imported at each stop. The goods are selected from the good library.
+6. `Add Import Good Button`: The button to open the [Good Selection Modal](#good-selection-modal) to select the goods to be imported at the selected stop.
+7. `Increase/Decrease Button`: The buttons to increase or decrease the quantity.
+8. `Remove Good Button`: The button to remove the selected good item.
+9. `Add Export Good Button`: The button to open the [Good Selection Modal]((#good-selection-modal)) to select the goods to be exported at the selected stop.
+10. `Transport Detail`: The section allows users to select the courier responsible for the delivery between each pair of stops. An extra information field is provided for additional information to the courier.
+11. `Courier Book Dropdown`: The dropdown menu to select the courier from the courier book. The `Create a Courier` button can open a new page for creating a new courier on the courier page, and a `Refresh` button to refresh the list after creating a new courier.
+12. `Transport Info`: The input field provides additional information to the courier, such as the type of transportation or any other relevant details.
+13. `Add Stop Button`: The button to add a new stop at the end of the current route.
+14. `Create Proposal Button`: The button to create a new route proposal based on the inputted route details. The proposal will be pushed to the world state and wait for all involved parties' signatures and the submission.
+
+### Good Selection Modal
+The Good Selection Modal is a pop-up window that allows users to select the goods to be imported/exported at each stop. It provides a user-friendly interface for users to browse the good library and select the desired goods.
+
+![Capture of Good Selection Modal](./resources/CreateRouteProposal_GoodModal.png)
 
 ### Route List Page
 
