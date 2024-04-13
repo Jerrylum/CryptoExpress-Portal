@@ -26,7 +26,7 @@ export default function Home() {
         href="/couriers"
       />
       <Grid title="Goods Library" description="All trade items definitions in the internal database." href="/goods" />
-      <Grid title="Route List" description="All routes and route proposals in the network." href="/routes" />
+      <Grid title="Route List" description="All routes and route proposals in the network." href="/routes/list" />
       <Grid title="Create Route" description="Create a new route proposal." href="/routes/create" />
     </div>
   );
